@@ -5,4 +5,5 @@ define('API_PATH', BASE_PATH . '/api');
 define('MODULES_PATH', API_PATH . '/modules');
 define('CONFIG_PATH', API_PATH . '/config');
 define('CLASSES_PATH', API_PATH . '/classes');
+define('INTERFACES_PATH', CLASSES_PATH . '/interfaces');
 ?>

@@ -17,6 +17,7 @@ class Api
         $this->parseUrl($_SERVER['REQUEST_URI']);
         $moduleName =$this->_requestUrlNodes[1];
         $this->loadModuleByName($moduleName);
+        $this->runModuleFunction($this->_requestUrlNodes[2], $this->_requestType, $this->_requestArgs);
     }
     
     private function initDbWorker()
@@ -36,21 +37,11 @@ class Api
     private function loadModuleByName($moduleName)
     {
         $this->_module = new $moduleName;  
-        
-        $module = $this->_module;
-        $methodName = "action_" . strtolower($this->_requestType);
-        $requestArgs = $this->_requestArgs;
-        $parametrs = null;
-        
-        if(exist($this->_requestUrlNodes[2]))
-        {
-            $parametrs = $this->_requestUrlNodes[2];
-        }
-        
-        if(method_exists($module, $methodName))
-        {
-            $module->$methodName($requestArgs,$parametrs);
-        }
+    }
+    
+    private function runModuleFunction(string $functionName = null, string $functionType, $functionArgs)
+    {
+        $this->_module->RunModuleFunction($functionName, $functionType, $functionArgs);
     }
     
 }
