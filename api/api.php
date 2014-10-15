@@ -3,7 +3,7 @@ class Api
 {
     private $_requestType;
     private $_requestArgs;
-    private $_requestUrl;
+    private $_requestUrlNodes=array();
     
     private $_dbWorker;
     private $_module;
@@ -13,9 +13,10 @@ class Api
     {
         $this->_requestType = $_SERVER['REQUEST_METHOD'];
         $this->_requestArgs = $_REQUEST;
-        $this->_requestUrl = $_SERVER['REQUEST_URI'];
-        $this->_initDbWorker();
-        $this->loadModuleByName($this->parseModuleName($this->_requestUrl));
+        //$this->initDbWorker();
+        $this->parseUrl($_SERVER['REQUEST_URI']);
+        $moduleName =$this->_requestUrlNodes[1];
+        $this->loadModuleByName($moduleName);
     }
     
     private function initDbWorker()
@@ -23,24 +24,18 @@ class Api
         $this->_dbWorker = new DbWorker();
     }
     
-    private function parseModuleName($url)
+    private function parseUrl($url)
     {
         $urlNodesList = explode('/', $url);
-        $moduleName = $urlNodesList[1];
-        return $moduleName;
+        foreach($urlNodesList as $val)
+        {
+            $this->_requestUrlNodes[] = strtolower($val);
+        }        
     }
     
     private function loadModuleByName($moduleName)
     {
-        try
-        {
-            $this->_module = new $moduleName;
-            throw new Exeption('Module does not exists');
-        }
-        catch(Exeption $e)
-        {
-            $this->_module = new Module_404();
-        }
+        $this->_module = new $moduleName;        
     }
     
 }
