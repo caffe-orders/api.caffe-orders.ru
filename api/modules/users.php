@@ -6,7 +6,7 @@ class Users implements Module_Interface
         echo 'azaza';
     }
     
-    public function RunModuleFunction(string $functionName, string $functionType, $functionArgs)
+    public function RunModuleFunction(string $functionName, string $functionType, $functionArgs, int $accessLevel)
     {
         
     }

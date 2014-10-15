@@ -17,7 +17,7 @@ class Api
         $this->parseUrl($_SERVER['REQUEST_URI']);
         $moduleName =$this->_requestUrlNodes[1];
         $this->loadModuleByName($moduleName);
-        $this->runModuleFunction($this->_requestUrlNodes[2], $this->_requestType, $this->_requestArgs);
+        $this->runModuleFunction($this->_requestUrlNodes[2], $this->_requestType, $this->_requestArgs, $this->_accessLevel);
     }
     
     private function initDbWorker()
@@ -39,9 +39,9 @@ class Api
         $this->_module = new $moduleName;  
     }
     
-    private function runModuleFunction(string $functionName = null, string $functionType, $functionArgs)
+    private function runModuleFunction(string $functionName = null, string $functionType, $functionArgs, $accessLevel = 0)
     {
-        $this->_module->RunModuleFunction($functionName, $functionType, $functionArgs);
+        $this->_module->RunModuleFunction($functionName, $functionType, $functionArgs, $accessLevel);
     }
     
 }
