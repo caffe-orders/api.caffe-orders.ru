@@ -22,7 +22,7 @@ class Api
     
     private function initDbWorker()
     {
-        $this->_dbWorker = new DbWorker();
+        $this->_dbWorker = DbWorker::GetInstance();
     }
     
     private function parseUrl($url)
