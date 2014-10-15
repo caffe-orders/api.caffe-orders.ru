@@ -38,19 +38,18 @@ class Api
         $this->_module = new $moduleName;  
         
         $module = $this->_module;
-        $methodName = $this->_requestUrlNodes[2];
-        $requestType = $this->_requestType;
+        $methodName = "action_" . strtolower($this->_requestType);
         $requestArgs = $this->_requestArgs;
         $parametrs = null;
         
-        if(exist($this->_requestUrlNodes[3]))
+        if(exist($this->_requestUrlNodes[2]))
         {
-            $parametrs = $this->_requestUrlNodes[3];
+            $parametrs = $this->_requestUrlNodes[2];
         }
         
         if(method_exists($module, $methodName))
         {
-            $module->$methodName($requestType,$requestArgs,$parametrs);
+            $module->$methodName($requestArgs,$parametrs);
         }
     }
     
