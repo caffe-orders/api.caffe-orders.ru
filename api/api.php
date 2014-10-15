@@ -20,8 +20,7 @@ class Api
     
     private function initDbWorker()
     {
-        $dbWorkerInitAgrs = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
-        $this->_dbWorker = new DbWorker($dbWorkerInitArgs, DB_USER, DB_PASS);
+        $this->_dbWorker = new DbWorker();
     }
     
     private function parseModuleName($url)
