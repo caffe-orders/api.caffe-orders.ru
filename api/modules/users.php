@@ -2,26 +2,31 @@
 class Users extends Module implements Module_Interface
 {    
     public function __construct()
-    {
-        echo 'users module loaded<br>';
-        $this->get('name', 0, function(array $functionArgs) {
-            echo 'get name zazazaza zaabotalo lalka';
-        });
-                   
+    {        
+        $aza = function ($Args)
+        {
+            print_r($Args);
+        };
+        
+        $this->get('name', 0, $aza);
     }
     
-    public function RunModuleFunction(string $functionName, string $functionType, $functionArgs, int $accessLevel)
+    public function RunModuleFunction( $functionType, $functionName,  $functionArgs,  $accessLevel)
     {
         $this->_functionArgs = $functionArgs;
-        $functionType = strtolower($functionType);
+        //$functionType = strtolower($functionType);
         $functionName = strtolower($functionName);
-        $outputData = null;
+        $outputData = function ($Args)
+        {
+            echo "error";
+        };
+        
         switch($functionType)
         {
-            case 'get': 
+            case "GET": 
                 foreach($this->_getFunctionsList as $functionData)
                 {
-                    if($functionsData['access'] == 0 && $functionsData['name'] == $functionName)
+                    if($functionData['access'] <= $accessLevel && $functionData['name'] == $functionName)
                     {
                         $outputData = $functionData['function'];
                     }
@@ -30,6 +35,6 @@ class Users extends Module implements Module_Interface
         }
         
         return $outputData($functionArgs);
-    }   
+    }     
 }
     

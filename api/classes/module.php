@@ -8,28 +8,33 @@ class Module
     
     protected $_functionArgs;
     
-    protected function get(string $fuctionName, int $accessLevel,  $functionBody)
+    public function __construct()
+    {
+        
+    }
+    
+    protected function get($functionName,  $accessLevel,  $functionBody)
     {
         $this->_getFunctionsList[] = array('name' => $functionName,
                                           'access' => $accessLevel,
                                           'function' => $functionBody);
     }
     
-    protected function post(string $fuctionName, int $accessLevel,  $functionBody)
+    protected function post( $functionName, int $accessLevel,  $functionBody)
     {
         $this->_postFunctionsList[] = array('name' => $functionName,
                                           'access' => $accessLevel,
                                           'function' => $functionBody);
     }
     
-    protected function put(string $fuctionName, int $accessLevel, $functionBody)
+    protected function put($functionName, int $accessLevel, $functionBody)
     {
         $this->_putFunctionsList[] = array('name' => $functionName,
                                           'access' => $accessLevel,
                                           'function' => $functionBody);
     }
     
-    protected function delete(string $fuctionName, int $accessLevel, $functionBody)
+    protected function delete($functionName, int $accessLevel, $functionBody)
     {
         $this->_deleteFunctionsList[] = array('name' => $functionName,
                                           'access' => $accessLevel,
