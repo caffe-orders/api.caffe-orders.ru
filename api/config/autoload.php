@@ -1,5 +1,5 @@
 <?php 
-echo 'AUTOLOAD';
+echo 'AUTOLOAD</br>';
 function __autoload($className)
 {
 	$className = strtolower($className);
@@ -15,6 +15,5 @@ function __autoload($className)
     { 
        require_once MODULES_PATH . '/' . $className . '.php';          
     } 
-    echo 'class load <br>';
 }
 ?>
