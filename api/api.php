@@ -35,7 +35,23 @@ class Api
     
     private function loadModuleByName($moduleName)
     {
-        $this->_module = new $moduleName;        
+        $this->_module = new $moduleName;  
+        
+        $module = $this->_module;
+        $methodName = $this->_requestUrlNodes[2];
+        $requestType = $this->_requestType;
+        $requestArgs = $this->_requestArgs;
+        $parametrs = null;
+        
+        if(exist($this->_requestUrlNodes[3]))
+        {
+            $parametrs = $this->_requestUrlNodes[3];
+        }
+        
+        if(method_exists($module, $methodName))
+        {
+            $module->$methodName($requestType,$requestArgs,$parametrs);
+        }
     }
     
 }
