@@ -3,7 +3,7 @@ class Api
 {
     private $_requestType;
     private $_requestArgs;
-    private $_requestUrlNodes=array();
+    private $_requestUrlNodes = array();
     
     private $_dbWorker;
     private $_module;
