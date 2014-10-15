@@ -3,17 +3,18 @@ class Users extends Module implements Module_Interface
 {    
     public function __construct()
     {        
+        $this->_dbWorker = DbWorker::GetInstance();
         $this->setGetFunction();
         $this->setPostFunction();
         $this->setPutFunction();
         $this->setDeleteFunction();
     }
     
-    public function RunModuleFunction( $functionType, $functionName,  $functionArgs,  $accessLevel)
+    public function RunModuleFunction($functionType, $functionName,  $functionArgs,  $accessLevel)
     {
         $this->_functionArgs = $functionArgs;
         $functionName = strtolower($functionName);
-        $outputData = function ($Args)
+        $outputData = function($args)
         {
             echo "error";
         };
@@ -68,9 +69,9 @@ class Users extends Module implements Module_Interface
     
     public function setGetFunction()
     {
-        $defaultFunction = function ($Args)
+        $defaultFunction = function($args)
         {
-            print_r($Args);
+            print_r($args);
         };
         
         $this->get('name', 0, $defaultFunction);
