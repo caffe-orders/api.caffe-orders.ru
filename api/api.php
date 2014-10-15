@@ -36,11 +36,11 @@ class Api
         try
         {
             $this->_module = new $moduleName;
+            throw new Exeption('Module does not exists');
         }
-        catch
+        catch(Exeption $e)
         {
             $this->_module = new Module_404();
-            throw new Exeption('Module does not exists');
         }
     }
     
