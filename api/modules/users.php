@@ -4,7 +4,7 @@ class Users extends Module implements Module_Interface
     public function __construct()
     {
         echo 'users module loaded<br>';
-        $this->get('name', 0, function($this->_functionArgs) {
+        $this->get('name', 0, function(array $functionArgs) {
             echo 'get name zazazaza zaabotalo lalka';
         });
                    
@@ -29,9 +29,7 @@ class Users extends Module implements Module_Interface
             break;
         }
         
-        return $outputData;
-    }
-    
-    
+        return $outputData($functionArgs);
+    }   
 }
     
