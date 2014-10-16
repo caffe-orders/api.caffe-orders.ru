@@ -1,5 +1,5 @@
 <?php 
-echo 'AUTOLOAD</br>';
+//echo 'AUTOLOAD</br>';
 function __autoload($className)
 {
     $className = strtolower($className);

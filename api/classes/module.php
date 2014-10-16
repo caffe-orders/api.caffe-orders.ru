@@ -13,14 +13,14 @@ class Module
         
     }
     
-    protected function get($functionName,  $accessLevel,  $functionBody)        //Получение данных
+    protected function get($functionName,  $accessLevel, $functionBody)        //Получение данных
     {
         $this->_getFunctionsList[] = array('name' => $functionName,
                                            'access' => $accessLevel,
                                            'function' => $functionBody);
     }
     
-    protected function post($functionName, $accessLevel,  $functionBody)        //Изменение
+    protected function post($functionName, $accessLevel, $functionBody)        //Изменение
     {
         $this->_postFunctionsList[] = array('name' => $functionName,
                                             'access' => $accessLevel,

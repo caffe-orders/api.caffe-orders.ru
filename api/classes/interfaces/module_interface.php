@@ -3,11 +3,11 @@ interface Module_Interface
 {
     public function RunModuleFunction($functionType, $functionName, $functionArgs, $accessLevel);
     
-    public function setGetFunction();
+    public function SetGetFunctions();
     
-    public function setPostFunction();
+    public function SetPostFunctions();
     
-    public function setPutFunction();
+    public function SetPutFunctions();
     
-    public function setDeleteFunction();
+    public function SetDeleteFunctions();
 }

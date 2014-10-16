@@ -3,11 +3,11 @@ class Users extends Module implements Module_Interface
 {    
     public function __construct()
     {        
-        $this->_dbWorker = DbWorker::GetInstance();
-        $this->setGetFunction();
-        $this->setPostFunction();
-        $this->setPutFunction();
-        $this->setDeleteFunction();
+        //$this->_dbWorker = DbWorker::GetInstance();
+        $this->SetGetFunctions();
+        $this->SetPostFunctions();
+        $this->SetPutFunctions();
+        $this->SetDeleteFunctions();
     }
     
     public function RunModuleFunction($functionType, $functionName,  $functionArgs,  $accessLevel)
@@ -67,27 +67,26 @@ class Users extends Module implements Module_Interface
         return $outputData($functionArgs);
     }     
     
-    public function setGetFunction()
-    {
-        $defaultFunction = function($args)
+    public function SetGetFunctions()
+    {   
+        $this->get('name', 0, function($args)
         {
-            print_r($args);
-        };
-        
-        $this->get('name', 0, $defaultFunction);
+            $lastorders = array('25.08.14', '26.08.14', '29.08.14');
+            return array('firstname' => 'John', 'secondname' => 'Smith', 'lastorders' => $lastorders);
+        });
     }
     
-    public function setPostFunction()
+    public function SetPostFunctions()
     {
         
     }
     
-    public function setPutFunction()
+    public function SetPutFunctions()
     {
         
     }
     
-    public function setDeleteFunction()
+    public function SetDeleteFunctions()
     {
         
     }

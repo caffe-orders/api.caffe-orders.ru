@@ -1,5 +1,5 @@
 <?php
-echo 'GLOBAL</br>';
+//echo 'GLOBAL</br>';
 define('BASE_PATH', $_SERVER[DOCUMENT_ROOT]);
 define('API_PATH', BASE_PATH . '/api');
 define('MODULES_PATH', API_PATH . '/modules');

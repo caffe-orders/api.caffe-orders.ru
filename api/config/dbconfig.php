@@ -1,5 +1,5 @@
 <?php
-echo 'DBCONFIG';
+//echo 'DBCONFIG';
 define("DB_USER", "zazaza");
 define("DB_PASS", "zazaza");
 define("DB_HOST", "zazaza");
