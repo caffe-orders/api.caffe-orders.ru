@@ -16,7 +16,7 @@ class Users extends Module implements Module_Interface
         $functionName = strtolower($functionName);
         $outputData = function($args)
         {
-            echo "error";
+            return array('Bad request');
         };
         
         switch($functionType)
