@@ -15,9 +15,10 @@ class Api
         $this->_requestArgs = $_REQUEST;
         $this->initDbWorker();
         $this->parseUrl($_SERVER['REQUEST_URI']);
-        $moduleName =$this->_requestUrlNodes[1];
-        $this->loadModuleByName($moduleName);
-        $this->sendResponse($this->getResponseData($this->_requestType, $this->_requestUrlNodes[2], $this->_requestArgs, $this->_accessLevel));
+        $moduleName = $this->_requestUrlNodes[1];
+        $this->loadModuleByName($moduleName);        
+        $responceData = $this->getResponseData($this->_requestType, $this->_requestUrlNodes[2], $this->_requestArgs, $this->_accessLevel);
+        $this->sendResponse($responceData);
     }
     
     private function initDbWorker()
@@ -46,7 +47,7 @@ class Api
     }
     
     private function sendResponse($data)
-    {
+    {        
         header('Content-Type: application/json'); 
         echo(json_encode($data));       
     }
