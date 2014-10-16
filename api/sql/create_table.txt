@@ -10,8 +10,7 @@ CREATE TABLE users (
    PRIMARY KEY(id),
    UNIQUE KEY(username),
    INDEX uname_pass_index (username, password_hash)
-)
-TYPE = MyISAM;
+);
 //tests
 EXPLAIN SELECT id, username, password_hash, email, firstname, lastname FROM users WHERE id = value
 EXPLAIN SELECT COUNT(*) FROM users WHERE username = value AND password_hash = value
