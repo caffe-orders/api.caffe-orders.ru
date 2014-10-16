@@ -74,6 +74,12 @@ class Users extends Module implements Module_Interface
             $lastorders = array('25.08.14', '26.08.14', '29.08.14');
             return array('firstname' => 'John', 'secondname' => 'Smith', 'lastorders' => $lastorders);
         });
+        
+        $this->get('', 0, function($args)
+        {
+            $lastorders = array('25.08.14', '26.08.14', '29.08.14');
+            return array('magic');
+        });
     }
     
     public function SetPostFunctions()
