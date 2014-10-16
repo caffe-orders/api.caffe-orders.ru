@@ -17,6 +17,7 @@ class Api
         $this->parseUrl($_SERVER['REQUEST_URI']);
         $moduleName =$this->_requestUrlNodes[1];
         $this->loadModuleByName($moduleName);
+        header('Content-Type: application/json'); 
         print_r(json_encode($this->getResponseData($this->_requestType, $this->_requestUrlNodes[2], $this->_requestArgs, $this->_accessLevel)));
     }
     
