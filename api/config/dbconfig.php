@@ -1,7 +1,7 @@
 <?php
 //echo 'DBCONFIG';
-define("DB_USER", "zazaza");
-define("DB_PASS", "zazaza");
-define("DB_HOST", "zazaza");
-define("DB_NAME", "zazaza");
-define("DB_TYPE", "mysql");
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_HOST', "127.0.0.1");
+define('DB_NAME', "test_db");
+define('DB_TYPE', "mysql");

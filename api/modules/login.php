@@ -1,5 +1,5 @@
-<?php 
-class Users extends Module implements Module_Interface
+<?php
+class Login extends Module implements Module_Interface
 {    
     public function __construct()
     {        
@@ -68,10 +68,10 @@ class Users extends Module implements Module_Interface
     
     public function SetGetFunctions()
     {   
-        $this->get('info', 0, function($args)
+        $this->get('example', 0, function($args)
         {
             $query = DbWorker::GetInstance()->prepare('SELECT id, username, password_hash, email, firstname, lastname FROM users WHERE id = ?');
-            $query->execute(array($args['id']));
+            $query->execute(array(1));
             return $query->fetch();
         });
     }
@@ -91,5 +91,4 @@ class Users extends Module implements Module_Interface
         
     }
 }
-
-    
+?>

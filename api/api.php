@@ -13,7 +13,7 @@ class Api
     {
         $this->_requestType = $_SERVER['REQUEST_METHOD'];
         $this->_requestArgs = $_REQUEST;
-        //$this->initDbWorker();
+        $this->initDbWorker();
         $this->parseUrl($_SERVER['REQUEST_URI']);
         $moduleName =$this->_requestUrlNodes[1];
         $this->loadModuleByName($moduleName);

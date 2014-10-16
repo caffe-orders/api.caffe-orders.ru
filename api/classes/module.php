@@ -6,8 +6,6 @@ class Module
     protected $_putFunctionsList = array();
     protected $_deleteFunctionsList = array();
     
-    protected $_dbWorker;
-    
     public function __construct()
     {
         

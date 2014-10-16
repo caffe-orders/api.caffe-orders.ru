@@ -1,0 +1,19 @@
+//password must be not longer than 16 symbols
+CREATE TABLE users (
+   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+   username VARCHAR(16) NOT NULL,
+   password_hash VARCHAR(64) NOT NULL,
+   email VARCHAR(255) NOT NULL,
+   access_level TINYINT UNSIGNED NOT NULL,
+   firstname VARCHAR(35) NOT NULL,
+   lastname VARCHAR(35) NOT NULL,
+   PRIMARY KEY(id),
+   UNIQUE KEY(username),
+   INDEX uname_pass_index (username, password_hash)
+)
+TYPE = MyISAM;
+//tests
+EXPLAIN SELECT id, username, password_hash, email, firstname, lastname FROM users WHERE id = value
+EXPLAIN SELECT COUNT(*) FROM users WHERE username = value AND password_hash = value
+EXPLAIN SELECT id FROM users WHERE username = value
+EXPLAIN SELECT access_level FROM users WHERE id = value
