@@ -37,6 +37,6 @@ class Module
         $this->_deleteFunctionsList[] = array('name' => $functionName,
                                               'access' => $accessLevel,
                                               'function' => $functionBody);
-    }
+    } 
 }
 ?>

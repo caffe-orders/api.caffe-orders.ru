@@ -21,7 +21,8 @@ class DbWorker
             
             try
             {
-                self::$instance = new PDO($dsn, DB_USER, DB_PASS);
+                self::$instance = new PDO($dsn, DB_USER, DB_PASS);                
+                self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 self::$instance->query("set names utf8");
             }
