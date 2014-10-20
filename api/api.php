@@ -44,18 +44,26 @@ class Api
             $outputData = $this->_module->RunModuleFunction($functionType, $functionName, $functionArgs, $accessLevel);
             return $outputData;
         }
-        return array('err_code' => '400 Bad Request');
+        return array('err_code' => '400');
     }
     // send response to client and sets header content type | need to add xml format responce?
     private function sendResponse($data)
-    {        
-        $errorCode = isset($data['err_code']) ? $data['err_code'] : '200 OK';
+    {   
+        $errorCode = '200';
+        
+        if(isset($data['err_code']))
+        {       
+            $errorCode = $data['err_code'];        
+        }         
+        
         $this->setResponseHeaders('application/json', $errorCode); 
         echo(json_encode($data));       
     }
     // sets responce content type and error state
     private function setResponseHeaders($responceType, $errorCode)
     {
+        $errorCode = Error_Code::GetCode($errorCode);
+        
         header('Content-Type: ' . $responceType);
         header('HTTP/1.0 ' . $errorCode);
     }

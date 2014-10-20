@@ -63,16 +63,28 @@ class Users extends Module implements Module_Interface
             
         }
         
-        return $outputData($functionArgs);
+        return $outputData($this->_functionArgs);
     }     
     
     public function SetGetFunctions()
     {   
-    $this->get('info', 0, function($args)
+        $this->get('info', 0, function($args)
         {
-            $query = DbWorker::GetInstance()->prepare('SELECT id, username, password_hash, email, firstname, lastname FROM users WHERE id = ?');
-            $query->execute(array($args['id']));
-            $queryResponseData = array('err_code' => '200 OK', 'data' => $query->fetch());
+            $parametersArray = array(
+                'id'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT id, username, password_hash, email, firstname, lastname FROM users WHERE id = ?');
+                $query->execute(array($args['id']));
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '400');
+            }
+            
             return $queryResponseData;
         });
     }

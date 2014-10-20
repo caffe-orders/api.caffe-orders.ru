@@ -38,5 +38,17 @@ class Module
                                               'access' => $accessLevel,
                                               'function' => $functionBody);
     } 
+    
+    static public function CheckFunctionArgs($parametersArray, $args)
+    {
+        foreach($parametersArray as $key)
+        {
+            if(!isset($args[$key]))            
+            {
+                return false;
+            }
+        }        
+        return true;
+    }
 }
 ?>
