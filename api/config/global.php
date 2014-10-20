@@ -2,10 +2,10 @@
 //echo 'GLOBAL</br>';
 define('BASE_PATH', $_SERVER[DOCUMENT_ROOT]);
 define('API_PATH', BASE_PATH . '/api');
-define('MODULES_PATH', API_PATH . '/modules');
+define('MODULE_PATH', API_PATH . '/modules');
 define('CONFIG_PATH', API_PATH . '/config');
-define('CLASSES_PATH', API_PATH . '/classes');
-define('INTERFACES_PATH', CLASSES_PATH . '/interfaces');
+define('CLASS_PATH', API_PATH . '/classes');
+define('INTERFACE_PATH', CLASS_PATH . '/interfaces');
 
 
 ?>
