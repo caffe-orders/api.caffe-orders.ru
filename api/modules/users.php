@@ -15,7 +15,7 @@ class Users extends Module implements Module_Interface
         $functionName = strtolower($functionName);
         $outputData = function($args)
         {
-            return array('Bad request');
+            return array('err_code' => '400 Bad Request');
         };
         
         switch($functionType)
@@ -72,6 +72,8 @@ class Users extends Module implements Module_Interface
         {
             $query = DbWorker::GetInstance()->prepare('SELECT id, username, password_hash, email, firstname, lastname FROM users WHERE id = ?');
             $query->execute(array($args['id']));
+            $queryResponseData[] = $query->fetch();
+            $queryResponseData[] = {'err_code' => '200 OK'};
             return $query->fetch();
         });
     }

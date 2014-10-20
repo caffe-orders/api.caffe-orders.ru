@@ -11,7 +11,7 @@ class Module
         
     }
     
-    protected function get($functionName,  $accessLevel, $functionBody)        //Получение данных
+    protected function get($functionName, $accessLevel, $functionBody)        //Получение данных
     {
         $this->_getFunctionsList[] = array('name' => $functionName,
                                            'access' => $accessLevel,

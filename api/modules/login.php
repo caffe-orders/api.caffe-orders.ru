@@ -15,7 +15,7 @@ class Login extends Module implements Module_Interface
         $functionName = strtolower($functionName);
         $outputData = function($args)
         {
-            return array('Bad request');
+            return array('err_code' => '400 Bad Request');
         };
         
         switch($functionType)
