@@ -1,6 +1,16 @@
 <?php
 class Error_Code
-{    
+{
+    private function __construct()
+    {
+        //You shall not pass!
+    }
+
+    private function __clone()
+    {
+        //Me not like clones! Me smash clones!
+    }
+    
     private static $_errorDictionary = array
     (    
         '200' => '200 OK',
