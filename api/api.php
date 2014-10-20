@@ -14,8 +14,7 @@ class Api
         $this->_requestArgs = $_REQUEST;
         $this->parseUrl($_SERVER['REQUEST_URI']);
         $this->checkAccessLevel();
-        $moduleName = $this->_requestUrlNodes[1];
-        $this->loadModuleByName();        
+        $this->loadModule();        
         $responceData = $this->getResponseData($this->_requestType, $this->_requestUrlNodes[2], $this->_requestArgs, $this->_accessLevel);
         $this->sendResponse($responceData);
     }
@@ -32,7 +31,10 @@ class Api
     private function loadModule()
     {
         $moduleName = $this->_requestUrlNodes[1];
-        $this->_module = new $moduleName;  
+        if(file_exists(MODULE_PATH."/".$moduleName))
+        {
+            $this->_module = new $moduleName;  
+        }
     }
     // send request to module, module returned output data (need to be array)
     private function getResponseData($functionType = 'GET', $functionName = null, $functionArgs = null, $accessLevel = 0)
