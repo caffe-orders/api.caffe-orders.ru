@@ -31,7 +31,7 @@ class Api
     private function loadModule()
     {
         $moduleName = $this->_requestUrlNodes[1];
-        if(file_exists(MODULE_PATH."/".$moduleName))
+        if(file_exists(MODULES_PATH . '/' . $moduleName . '.php'))
         {
             $this->_module = new $moduleName;  
         }
