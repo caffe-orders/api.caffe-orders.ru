@@ -76,7 +76,7 @@ class Users extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args) == true)
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, username, password_hash, email, firstname, lastname FROM users WHERE id = ?');
+                $query = DbWorker::GetInstance()->prepare('SELECT id, mail, password_hash, name, lastname, access_level, reg_code FROM users WHERE id = ?');
                 $query->execute(array($args['id']));
                 $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
             }
