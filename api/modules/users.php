@@ -87,6 +87,64 @@ class Users extends Module implements Module_Interface
             
             return $queryResponseData;
         });
+        
+        $this->get('new', 0, function($args)
+        {
+            $parametersArray = array(
+                'mail',
+                'password',
+                'telephone',
+                'name',
+                'lastname'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT id FROM users WHERE telephone = :telephone');
+                $query->execute(array(':telephone' => $args['telephone']));
+                $result = $query->fetch();
+                
+                if($result==null)
+                {
+                    $str='INSERT users (mail, password_hash, telephone, name, lastname, access_level, reg_code, reg_time) VALUES (:mail, :password_hash, :telephone, :name, :lastname, :access_level, :reg_code, :reg_time)';
+                    $generetedRegCode = rand(0,999);                            //Тут нужна функция для генерации случайного кода приблизительно из 3-4 цифр
+                    $arr = array(
+                        ':mail' => $args['mail'], 
+                        ':password_hash' => md5($args['password'].'hash'),      //Пускай доступ 1 будет у пользователей с неподтвержденным номером телефона
+                        ':telephone' => $args['telephone'], 
+                        ':name' => $args['name'], 
+                        ':lastname' => $args['lastname'], 
+                        ':access_level' => '1',                             
+                        ':reg_code' => $generetedRegCode, 
+                        ':reg_time' => microtime()
+                    );
+                    
+                    $query = DbWorker::GetInstance()->prepare($str);
+                    $query->execute($arr);
+                    $insertedId = $query->fetch();
+                    
+                    if($insertedId > 0)
+                    {
+                        $queryResponseData = array('err_code' => '200', 'data' => 'User add true');
+                    }
+                    else
+                    {
+                        $queryResponseData = array('err_code' => '400', 'data' => 'User add faild');
+                    }                    
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '400', 'data' => 'telephone use other user');
+                }
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '400', 'data' => 'error in entered args');
+            }
+            
+            return $queryResponseData;
+        });
+        
     }
     
     public function SetPostFunctions()
