@@ -98,7 +98,7 @@ class Users extends Module implements Module_Interface
                 'lastname'
             ); 
             
-            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            if(Module::CheckFunctionArgs($parametersArray, $args))
             {
                 $query = DbWorker::GetInstance()->prepare('SELECT id FROM users WHERE telephone = :telephone');
                 $query->execute(array(':telephone' => $args['telephone']));
@@ -106,7 +106,8 @@ class Users extends Module implements Module_Interface
                 
                 if($result==null)
                 {
-                    $str='INSERT users (mail, password_hash, telephone, name, lastname, access_level, reg_code, reg_time) VALUES (:mail, :password_hash, :telephone, :name, :lastname, :access_level, :reg_code, :reg_time)';
+                    $str='INSERT users (mail, password_hash, telephone, name, lastname, access_level, reg_code, reg_time) 
+                        VALUES (:mail, :password_hash, :telephone, :name, :lastname, :access_level, :reg_code, :reg_time)';
                     $generetedRegCode = rand(0,999);                            //Тут нужна функция для генерации случайного кода приблизительно из 3-4 цифр
                     $arr = array(
                         ':mail' => $args['mail'], 

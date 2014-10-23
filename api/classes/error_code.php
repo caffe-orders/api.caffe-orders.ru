@@ -14,14 +14,16 @@ class Error_Code
     private static $_errorDictionary = array
     (    
         '200' => '200 OK',
-        '400' => '400 Bad Request'
+        '400' => '400 Bad Request',
+        '401' => '401 Unauthorized',
+        '500' => '500 Internal Server Error'
     );
     
     static public function GetCode($key)
     {
         if(!isset(self::$_errorDictionary[$key]))        
         {
-            $key = '400';
+            $key = '500';
         }
         
         return self::$_errorDictionary[$key];

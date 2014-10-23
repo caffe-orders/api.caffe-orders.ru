@@ -1,17 +1,31 @@
 //password must be not longer than 16 symbols
 CREATE TABLE users (
    id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-   username VARCHAR(16) NOT NULL,
-   password_hash VARCHAR(64) NOT NULL,
    email VARCHAR(255) NOT NULL,
+   password_hash VARCHAR(64) NOT NULL,
    phone VARCHAR(20) NOT NULL,
    access_level TINYINT UNSIGNED NOT NULL,
    firstname VARCHAR(35) NOT NULL,
    lastname VARCHAR(35) NOT NULL,
+   reg_code INTEGER UNSIGNED NOT NULL,
    PRIMARY KEY(id),
-   UNIQUE KEY(username),
-   INDEX uname_pass_index (username, password_hash)
+   UNIQUE KEY(email),
+   INDEX uname_pass_index (email, password_hash)
 );
+
+CREATE caffes (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  name varchar(50) NOT NULL,
+  addres varchar(100) NOT NULL,
+  phones varchar(100) NOT NULL,
+  working_time varchar(100) NOT NULL,
+  short_info varchar(250) NOT NULL,
+  info` varchar(1000) NOT NULL,
+  preview_img varchar(40) NOT NULL,
+  album_name varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 //tests
 EXPLAIN SELECT id, username, password_hash, email, firstname, lastname FROM users WHERE id = value
 EXPLAIN SELECT COUNT(*) FROM users WHERE username = value AND password_hash = value
