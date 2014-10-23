@@ -93,26 +93,26 @@ class Users extends Module implements Module_Interface
             $parametersArray = array(
                 'mail',
                 'password',
-                'telephone',
+                'phone',
                 'name',
                 'lastname'
             ); 
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id FROM users WHERE telephone = :telephone');
-                $query->execute(array(':telephone' => $args['telephone']));
+                $query = DbWorker::GetInstance()->prepare('SELECT id FROM users WHERE phone = :phone');
+                $query->execute(array(':phone' => $args['phone']));
                 $result = $query->fetch();
                 
                 if($result==null)
                 {
-                    $str='INSERT users (mail, password_hash, telephone, name, lastname, access_level, reg_code, reg_time) 
-                        VALUES (:mail, :password_hash, :telephone, :name, :lastname, :access_level, :reg_code, :reg_time)';
+                    $str='INSERT users (mail, password_hash, phone, name, lastname, access_level, reg_code, reg_time) 
+                        VALUES (:mail, :password_hash, :phone, :name, :lastname, :access_level, :reg_code, :reg_time)';
                     $generetedRegCode = rand(0,999);                            //Тут нужна функция для генерации случайного кода приблизительно из 3-4 цифр
                     $arr = array(
                         ':mail' => $args['mail'], 
                         ':password_hash' => md5($args['password'].'hash'),      //Пускай доступ 1 будет у пользователей с неподтвержденным номером телефона
-                        ':telephone' => $args['telephone'], 
+                        ':phone' => $args['phone'], 
                         ':name' => $args['name'], 
                         ':lastname' => $args['lastname'], 
                         ':access_level' => '1',                             
@@ -122,7 +122,7 @@ class Users extends Module implements Module_Interface
                     
                     $query = DbWorker::GetInstance()->prepare($str);
                     $query->execute($arr);
-                    $insertedId = $query->fetch();
+                    $insertedId = $query->lastInsertId();
                     
                     if($insertedId > 0)
                     {

@@ -81,7 +81,7 @@ class Users extends Module implements Module_Interface
                 $query->execute(array($args['email']));
                 if($response = $query->fetch())
                 {
-                    if($response['password_hash'] == md5($args['password'])
+                    if($response['password_hash'] == md5($args['password']))
                     {
                         $_SESSION['id'] = $response['id'];
                         $queryResponseData = array('err_code' => '200');
