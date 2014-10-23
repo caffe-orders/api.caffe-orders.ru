@@ -109,6 +109,7 @@ class Users extends Module implements Module_Interface
                     $str='INSERT users (mail, password_hash, phone, name, lastname, access_level, reg_code, reg_time) 
                         VALUES (:mail, :password_hash, :phone, :name, :lastname, :access_level, :reg_code, :reg_time)';
                     $generetedRegCode = rand(0,999);                            //Тут нужна функция для генерации случайного кода приблизительно из 3-4 цифр
+                    
                     $arr = array(
                         ':mail' => $args['mail'], 
                         ':password_hash' => md5($args['password'].'hash'),      //Пускай доступ 1 будет у пользователей с неподтвержденным номером телефона
@@ -120,11 +121,9 @@ class Users extends Module implements Module_Interface
                         ':reg_time' => microtime()
                     );
                     
-                    $query = DbWorker::GetInstance()->prepare($str);
-                    $query->execute($arr);
-                    $insertedId = $query->lastInsertId();
+                    $query = DbWorker::GetInstance()->prepare($str); 
                     
-                    if($insertedId > 0)
+                    if($query->execute($arr))
                     {
                         $queryResponseData = array('err_code' => '200', 'data' => 'User add true');
                     }
