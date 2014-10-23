@@ -109,7 +109,7 @@ class Users extends Module implements Module_Interface
                     $str='INSERT users (mail, password_hash, phone, name, lastname, access_level, reg_code, reg_time) 
                         VALUES (:mail, :password_hash, :phone, :name, :lastname, :access_level, :reg_code, :reg_time)';
                     $generetedRegCode = rand(0,999);                            //Тут нужна функция для генерации случайного кода приблизительно из 3-4 цифр
-                    
+                    azazazaz
                     $arr = array(
                         ':mail' => $args['mail'], 
                         ':password_hash' => md5($args['password'].'hash'),      //Пускай доступ 1 будет у пользователей с неподтвержденным номером телефона
