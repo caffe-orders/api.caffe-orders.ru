@@ -68,7 +68,7 @@ class Users extends Module implements Module_Interface
     
     public function SetGetFunctions()
     {   
-        $this->get('info', 0, function($args)
+        $this->get('info', 1, function($args)
         {
             $parametersArray = array(
                 'id'
@@ -91,7 +91,7 @@ class Users extends Module implements Module_Interface
         $this->get('new', 0, function($args)
         {
             $parametersArray = array(
-                'mail',
+                'email',
                 'password',
                 'phone',
                 'firstname',
@@ -100,24 +100,25 @@ class Users extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id FROM users WHERE phone = ?');
-                $query->execute(array($args['phone']));
-                if($result = $query->fetch();)
+                $query = DbWorker::GetInstance()->prepare('SELECT id FROM users WHERE email = :email OR phone = :phone');
+                $query->execute(array(':email' => $args['email'], ':phone' => $args['phone']));
+                $result = $query->fetch();
+                if(!$result)
                 {
-                    $query = 'INSERT users (mail, password_hash, phone, firstname, lastname, access_level, reg_code, reg_time) 
-                        VALUES (:mail, :password_hash, :phone, :firstname, :lastname, :access_level, :reg_time, reg_time)';
+                    $query = 'INSERT users (email, password_hash, phone, access_level, firstname, lastname,  reg_code, reg_time) 
+                                VALUES (:email, :password_hash, :phone, :access_level, :firstname, :lastname, :reg_code, :reg_time)';
                     $generatedRegCode = rand(0,9999); //to be continued
                     
                     $query = DbWorker::GetInstance()->prepare($query);
                     $queryArgsList = array(
-                        ':mail' => $args['mail'],
+                        ':email' => $args['email'],
                         ':password_hash' => md5($args['password']),
                         ':phone' => $args['phone'], 
                         ':firstname' => $args['firstname'],
                         ':lastname' => $args['lastname'], 
-                        ':access_level' => '1',                             
+                        ':access_level' => 1,                             
                         ':reg_code' => $generatedRegCode, 
-                        ':reg_time' => date('Y-m-d H:i:s');
+                        ':reg_time' => date('Y-m-d H:i:s')
                     );
                     if($query->execute($queryArgsList))
                     {
@@ -130,7 +131,7 @@ class Users extends Module implements Module_Interface
                 }
                 else
                 {
-                    $queryResponseData = array('err_code' => '400', 'data' => 'phone is occupied');
+                    $queryResponseData = array('err_code' => '400', 'data' => 'phone or email is occupied');
                 }
             }
             else
