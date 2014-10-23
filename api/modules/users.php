@@ -94,52 +94,48 @@ class Users extends Module implements Module_Interface
                 'mail',
                 'password',
                 'phone',
-                'name',
+                'firstname',
                 'lastname'
             ); 
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id FROM users WHERE phone = :phone');
-                $query->execute(array(':phone' => $args['phone']));
-                $result = $query->fetch();
-                
-                if($result==null)
+                $query = DbWorker::GetInstance()->prepare('SELECT id FROM users WHERE phone = ?');
+                $query->execute(array($args['phone']));
+                if($result = $query->fetch();)
                 {
-                    $str='INSERT users (mail, password_hash, phone, name, lastname, access_level, reg_code, reg_time) 
-                        VALUES (:mail, :password_hash, :phone, :name, :lastname, :access_level, :reg_code, :reg_time)';
-                    $generetedRegCode = rand(0,999);                            //Тут нужна функция для генерации случайного кода приблизительно из 3-4 цифр
-                    azazazaz
-                    $arr = array(
-                        ':mail' => $args['mail'], 
-                        ':password_hash' => md5($args['password'].'hash'),      //Пускай доступ 1 будет у пользователей с неподтвержденным номером телефона
+                    $query = 'INSERT users (mail, password_hash, phone, firstname, lastname, access_level, reg_code, reg_time) 
+                        VALUES (:mail, :password_hash, :phone, :firstname, :lastname, :access_level, :reg_time, reg_time)';
+                    $generatedRegCode = rand(0,9999); //to be continued
+                    
+                    $query = DbWorker::GetInstance()->prepare($query);
+                    $queryArgsList = array(
+                        ':mail' => $args['mail'],
+                        ':password_hash' => md5($args['password']),
                         ':phone' => $args['phone'], 
-                        ':name' => $args['name'], 
+                        ':firstname' => $args['firstname'],
                         ':lastname' => $args['lastname'], 
                         ':access_level' => '1',                             
-                        ':reg_code' => $generetedRegCode, 
-                        ':reg_time' => microtime()
+                        ':reg_code' => $generatedRegCode, 
+                        ':reg_time' => date('Y-m-d H:i:s');
                     );
-                    
-                    $query = DbWorker::GetInstance()->prepare($str); 
-                    
-                    if($query->execute($arr))
+                    if($query->execute($queryArgsList))
                     {
-                        $queryResponseData = array('err_code' => '200', 'data' => 'User add true');
+                        $queryResponseData = array('err_code' => '200');
                     }
                     else
                     {
-                        $queryResponseData = array('err_code' => '400', 'data' => 'User add faild');
-                    }                    
+                        $queryResponseData = array('err_code' => '401');
+                    }        
                 }
                 else
                 {
-                    $queryResponseData = array('err_code' => '400', 'data' => 'telephone use other user');
+                    $queryResponseData = array('err_code' => '400', 'data' => 'phone is occupied');
                 }
             }
             else
             {                
-                $queryResponseData = array('err_code' => '400', 'data' => 'error in entered args');
+                $queryResponseData = array('err_code' => '401', 'data' => 'args error');
             }
             
             return $queryResponseData;

@@ -29,6 +29,3 @@ class Error_Code
         return self::$_errorDictionary[$key];
     }
 }
-
-
-    
