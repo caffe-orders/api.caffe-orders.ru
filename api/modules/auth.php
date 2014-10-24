@@ -100,6 +100,13 @@ class Users extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        $this->get('logout', 1, function($args)
+        {
+            session_destroy();
+            $queryResponseData = array('err_code' => '200');
+            
+            return $queryResponseData;
+        });
     }
     
     public function SetPostFunctions()
