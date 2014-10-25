@@ -21,7 +21,7 @@ class Api
     // parse url into nodes
     private function parseUrl($url)
     {
-        $urlNodesList = explode('/', $url);
+        $urlNodesList = explode(array('/', '?'), $url);
         foreach($urlNodesList as $val)
         {
             $this->_requestUrlNodes[] = strtolower($val);
