@@ -14,7 +14,7 @@ class Error_Code
     private static $_errorDictionary = array
     (    
         '200' => '200 OK',
-        '400' => '400 Bad Request',
+        '400' => '400 Bad Request or low access priority',
         '401' => '401 Unauthorized',
         '500' => '500 Internal Server Error'
     );

@@ -15,7 +15,7 @@ class Users extends Module implements Module_Interface
         $functionName = strtolower($functionName);
         $outputData = function($args)
         {
-            return array('err_code' => '400 Bad Request');
+            return array('err_code' => '400');
         };
         
         switch($functionType)
@@ -68,7 +68,8 @@ class Users extends Module implements Module_Interface
     
     public function SetGetFunctions()
     {   
-        $this->get('info', 1, function($args)
+        //return  all user info 
+        $this->get('allinfo', 10, function($args)
         {
             $parametersArray = array(
                 'id'
@@ -76,7 +77,7 @@ class Users extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args) == true)
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, mail, password_hash, name, lastname, access_level, reg_code FROM users WHERE id = ?');
+                $query = DbWorker::GetInstance()->prepare('SELECT id, mail, password_hash, access_level, firstname, lastname, reg_code FROM users WHERE id = ?');
                 $query->execute(array($args['id']));
                 $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
             }
@@ -88,6 +89,28 @@ class Users extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        //return user info
+        $this->get('info', 0, function($args)
+        {
+            $parametersArray = array(
+                'id'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, firstname, lastname FROM users WHERE id = :id');
+                $query->execute(array(':id' => $args['id']));
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '400');
+            }
+            
+            return $queryResponseData;
+        });
+        
+        //create new user
         $this->get('new', 0, function($args)
         {
             $parametersArray = array(
