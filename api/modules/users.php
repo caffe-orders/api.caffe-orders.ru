@@ -162,9 +162,11 @@ class Users extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args) == true)
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, firstname, lastname FROM users ORDER BY id DESC LIMIT :startindex, :limit');
-                $query->execute(array(':startindex' => $args['startindex'], ':limit' => $args['limit']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, firstname, lastname FROM users ORDER BY id DESC LIMIT :limit');
+                //$query->bindParam(':startindex', $args['startindex'], PDO::PARAM_INT); 
+                $query->bindParam(':limit', $args['limit'], PDO::PARAM_INT); 
+                $query->execute();
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll(PDO::FETCH_ASSOC));
             }
             else
             {                
