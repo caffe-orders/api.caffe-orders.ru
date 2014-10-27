@@ -88,49 +88,7 @@ class Users extends Module implements Module_Interface
             
             return $queryResponseData;
         });
-        
-        //return user email GET responce type
-        $this->get('email', 10, function($args)
-        {
-            $parametersArray = array(
-                'id'
-            ); 
-            
-            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
-            {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, email FROM users WHERE id = :id');
-                $query->execute(array(':id' => $args['id']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
-            }
-            else
-            {                
-                $queryResponseData = array('err_code' => '400');
-            }
-            
-            return $queryResponseData;
-        });
-        
-        //return user phone GET responce type
-        $this->get('phone', 10, function($args)
-        {
-            $parametersArray = array(
-                'id'
-            ); 
-            
-            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
-            {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, phone FROM users WHERE id = :id');
-                $query->execute(array(':id' => $args['id']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
-            }
-            else
-            {                
-                $queryResponseData = array('err_code' => '400');
-            }
-            
-            return $queryResponseData;
-        });
-        
+                
         //return user info GET responce type
         $this->get('info', 1, function($args)
         {
@@ -157,15 +115,15 @@ class Users extends Module implements Module_Interface
         {
             $parametersArray = array(
                 'limit',
-                'startindex'
+                'offset'
             ); 
             
             if(Module::CheckFunctionArgs($parametersArray, $args) == true)
             {
-                $startIndex = (int)$args['startindex'];
+                $offset = (int)$args['offset'];
                 $limit = (int)$args['limit'];
-                $query = DbWorker::GetInstance()->prepare('SELECT * FROM users ORDER BY id DESC LIMIT :startindex , :limit');
-                $query->bindParam(':startindex',$startIndex , PDO::PARAM_INT); 
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM users ORDER BY id DESC LIMIT :offset , :limit');
+                $query->bindParam(':offset',$offset , PDO::PARAM_INT); 
                 $query->bindParam(':limit', $limit, PDO::PARAM_INT); 
                 $query->execute();
                 $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll());
@@ -176,49 +134,7 @@ class Users extends Module implements Module_Interface
             }
             
             return $queryResponseData;
-        });
-        
-        //return user firstname GET responce type
-        $this->get('firstname', 0, function($args)
-        {
-            $parametersArray = array(
-                'id'
-            ); 
-            
-            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
-            {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, firstname FROM users WHERE id = :id');
-                $query->execute(array(':id' => $args['id']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
-            }
-            else
-            {                
-                $queryResponseData = array('err_code' => '400');
-            }
-            
-            return $queryResponseData;
-        });
-        
-        //return user lastname GET responce type
-        $this->get('lastname', 0, function($args)
-        {
-            $parametersArray = array(
-                'id'
-            ); 
-            
-            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
-            {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, lastname FROM users WHERE id = :id');
-                $query->execute(array(':id' => $args['id']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
-            }
-            else
-            {                
-                $queryResponseData = array('err_code' => '400');
-            }
-            
-            return $queryResponseData;
-        });
+        });        
         
         //create new user PUT responce type
         $this->get('new', 0, function($args)
