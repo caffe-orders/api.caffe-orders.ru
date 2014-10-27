@@ -132,7 +132,7 @@ class Users extends Module implements Module_Interface
         });
         
         //return user info GET responce type
-        $this->get('info', 0, function($args)
+        $this->get('info', 1, function($args)
         {
             $parametersArray = array(
                 'id'
@@ -162,8 +162,8 @@ class Users extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args) == true)
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, firstname, lastname FROM users ORDER BY `id` DESC LIMIT :startindex, :limit');
-                $query->execute(array(':startindex' => $args['startindex'],':limit' => $args['limit']));
+                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, firstname, lastname FROM users ORDER BY id DESC LIMIT :startindex, :limit');
+                $query->execute(array(':startindex' => $args['startindex'], ':limit' => $args['limit']));
                 $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
             }
             else
