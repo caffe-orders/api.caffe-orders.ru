@@ -68,7 +68,7 @@ class Users extends Module implements Module_Interface
     
     public function SetGetFunctions()
     {   
-        //return  all user info 
+        //return all user info GET responce type
         $this->get('allinfo', 10, function($args)
         {
             $parametersArray = array(
@@ -77,7 +77,7 @@ class Users extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args) == true)
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, mail, password_hash, access_level, firstname, lastname, reg_code FROM users WHERE id = ?');
+                $query = DbWorker::GetInstance()->prepare('SELECT id, mail, password_hash, phone, access_level, firstname, lastname, reg_code FROM users WHERE id = ?');
                 $query->execute(array($args['id']));
                 $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
             }
@@ -89,7 +89,49 @@ class Users extends Module implements Module_Interface
             return $queryResponseData;
         });
         
-        //return user info
+        //return user email GET responce type
+        $this->get('email', 10, function($args)
+        {
+            $parametersArray = array(
+                'id'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT id, email FROM users WHERE id = :id');
+                $query->execute(array(':id' => $args['id']));
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '400');
+            }
+            
+            return $queryResponseData;
+        });
+        
+        //return user phone GET responce type
+        $this->get('phone', 10, function($args)
+        {
+            $parametersArray = array(
+                'id'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT id, phone FROM users WHERE id = :id');
+                $query->execute(array(':id' => $args['id']));
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '400');
+            }
+            
+            return $queryResponseData;
+        });
+        
+        //return user info GET responce type
         $this->get('info', 0, function($args)
         {
             $parametersArray = array(
@@ -110,7 +152,71 @@ class Users extends Module implements Module_Interface
             return $queryResponseData;
         });
         
-        //create new user
+        //return user list GET responce type
+        $this->get('list', 0, function($args)
+        {
+            $parametersArray = array(
+                'limit',
+                'startindex'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, firstname, lastname FROM users ORDER BY `id` DESC LIMIT :startindex, :limit');
+                $query->execute(array(':startindex' => $args['startindex'],':limit' => $args['limit']));
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '400');
+            }
+            
+            return $queryResponseData;
+        });
+        
+        //return user firstname GET responce type
+        $this->get('firstname', 0, function($args)
+        {
+            $parametersArray = array(
+                'id'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT id, firstname FROM users WHERE id = :id');
+                $query->execute(array(':id' => $args['id']));
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '400');
+            }
+            
+            return $queryResponseData;
+        });
+        
+        //return user lastname GET responce type
+        $this->get('lastname', 0, function($args)
+        {
+            $parametersArray = array(
+                'id'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT id, lastname FROM users WHERE id = :id');
+                $query->execute(array(':id' => $args['id']));
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '400');
+            }
+            
+            return $queryResponseData;
+        });
+        
+        //create new user PUT responce type
         $this->get('new', 0, function($args)
         {
             $parametersArray = array(
