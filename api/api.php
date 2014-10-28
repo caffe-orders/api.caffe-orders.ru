@@ -64,7 +64,7 @@ class Api
     // sets responce content type and error state
     private function setResponseHeaders($responceType, $errorCode)
     {
-        $errorCode = Error_Code::GetCode($errorCode);
+        $errorCode = ErrorCodeDictionary::GetCode($errorCode);
         
         header('Content-Type: ' . $responceType);
         header('HTTP/1.0 ' . $errorCode);

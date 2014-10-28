@@ -12,6 +12,7 @@ class Users extends Module implements Module_Interface
     public function RunModuleFunction($functionType, $functionName,  $functionArgs,  $accessLevel)
     {
         $this->_functionArgs = $functionArgs;
+        $functionType = strtolower($functionType);
         $functionName = strtolower($functionName);
         $outputData = function($args)
         {
@@ -20,7 +21,7 @@ class Users extends Module implements Module_Interface
         
         switch($functionType)
         {
-            case "GET": 
+            case "get": 
                 foreach($this->_getFunctionsList as $functionData)
                 {
                     if($functionData['access'] <= $accessLevel && $functionData['name'] == $functionName)
@@ -30,7 +31,7 @@ class Users extends Module implements Module_Interface
                     }
                 }
             break;
-            case "PUT": 
+            case "put": 
                 foreach($this->_putFunctionsList as $functionData)
                 {
                     if($functionData['access'] <= $accessLevel && $functionData['name'] == $functionName)
@@ -40,7 +41,7 @@ class Users extends Module implements Module_Interface
                     }
                 }
             break;
-            case "POST": 
+            case "post": 
                 foreach($this->_postFunctionsList as $functionData)
                 {
                     if($functionData['access'] <= $accessLevel && $functionData['name'] == $functionName)
@@ -50,7 +51,7 @@ class Users extends Module implements Module_Interface
                     }
                 }
             break;
-            case "DELETE": 
+            case "delete": 
                 foreach($this->_deleteFunctionsList as $functionData)
                 {
                     if($functionData['access'] <= $accessLevel && $functionData['name'] == $functionName)
@@ -83,7 +84,7 @@ class Users extends Module implements Module_Interface
             }
             else
             {                
-                $queryResponseData = array('err_code' => '400');
+                $queryResponseData = array('err_code' => '602');
             }
             
             return $queryResponseData;
@@ -104,7 +105,7 @@ class Users extends Module implements Module_Interface
             }
             else
             {                
-                $queryResponseData = array('err_code' => '400');
+                $queryResponseData = array('err_code' => '602');
             }
             
             return $queryResponseData;
@@ -130,7 +131,7 @@ class Users extends Module implements Module_Interface
             }
             else
             {                
-                $queryResponseData = array('err_code' => '400');
+                $queryResponseData = array('err_code' => '602');
             }
             
             return $queryResponseData;
@@ -185,7 +186,7 @@ class Users extends Module implements Module_Interface
             }
             else
             {                
-                $queryResponseData = array('err_code' => '401', 'data' => 'args error');
+                $queryResponseData = array('err_code' => '602');
             }
             
             return $queryResponseData;

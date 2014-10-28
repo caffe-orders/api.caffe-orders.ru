@@ -1,5 +1,5 @@
 <?php
-class Error_Code
+class ErrorCodeDictionary
 {
     private function __construct()
     {
@@ -16,14 +16,17 @@ class Error_Code
         '200' => '200 OK',
         '400' => '400 Bad Request or low access priority',
         '401' => '401 Unauthorized',
-        '500' => '500 Internal Server Error'
+        '500' => '500 Internal Server Error',
+        '600' => '600 Access Denied',
+        '601' => '601 Unknown Error Code',
+        '602' => '602 Arguments Not Exists'
     );
     
     static public function GetCode($key)
     {
         if(!isset(self::$_errorDictionary[$key]))        
         {
-            $key = '500';
+            $key = '601';
         }
         
         return self::$_errorDictionary[$key];
