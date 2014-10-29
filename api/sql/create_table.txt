@@ -1,21 +1,142 @@
-//password must be not longer than 16 symbols
-CREATE TABLE users (
-   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-   email VARCHAR(255) NOT NULL,
-   password_hash VARCHAR(64) NOT NULL,
-   phone VARCHAR(20) NOT NULL,
-   access_level TINYINT UNSIGNED NOT NULL,
-   firstname VARCHAR(35) NOT NULL,
-   lastname VARCHAR(35) NOT NULL,
-   reg_code INTEGER UNSIGNED NOT NULL,
-   reg_time TIMESTAMP(14) NOT NULL,
-   PRIMARY KEY(id),
-   UNIQUE KEY(email),
-   INDEX uname_pass_index (email, password_hash)
-);
+-- phpMyAdmin SQL Dump
+-- version 3.5.4
+-- http://www.phpmyadmin.net
+--
+-- Хост: 83.69.230.13
+-- Время создания: Окт 29 2014 г., 16:16
+-- Версия сервера: 5.1.67-log
+-- Версия PHP: 5.3.21
 
-//tests
-EXPLAIN SELECT id, username, password_hash, email, firstname, lastname FROM users WHERE id = value
-EXPLAIN SELECT COUNT(*) FROM users WHERE username = value AND password_hash = value
-EXPLAIN SELECT id FROM users WHERE username = value
-EXPLAIN SELECT access_level FROM users WHERE id = value
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- База данных: `vh206740_apisql`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `caffes`
+--
+
+CREATE TABLE IF NOT EXISTS `caffes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `addres` varchar(100) NOT NULL,
+  `telephones` varchar(100) NOT NULL,
+  `working_time` varchar(100) NOT NULL,
+  `short_info` varchar(250) NOT NULL,
+  `info` varchar(1000) NOT NULL,
+  `wifi` int(11) NOT NULL,
+  `type` int(11) NOT NULL,
+  `rating` float NOT NULL,
+  `number_voters` int(11) NOT NULL,
+  `sum_votes` int(11) NOT NULL,
+  `preview_img` varchar(40) NOT NULL,
+  `album_name` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `orders`
+--
+
+CREATE TABLE IF NOT EXISTS `orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `caffe_id` int(11) NOT NULL,
+  `room_id` int(11) NOT NULL,
+  `table_id` int(11) NOT NULL,
+  `username` varchar(18) NOT NULL,
+  `time` varchar(15) NOT NULL,
+  `type` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `enter_time` varchar(15) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `rooms`
+--
+
+CREATE TABLE IF NOT EXISTS `rooms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `caffe_id` int(11) NOT NULL,
+  `background_img` varchar(40) NOT NULL,
+  `xLength` int(11) NOT NULL,
+  `yLength` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `tables`
+--
+
+CREATE TABLE IF NOT EXISTS `tables` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `number` int(11) NOT NULL,
+  `room_index` int(11) NOT NULL,
+  `xPos` int(11) NOT NULL,
+  `yPox` int(11) NOT NULL,
+  `table_type` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(64) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `access_level` tinyint(3) unsigned NOT NULL,
+  `firstname` varchar(35) NOT NULL,
+  `lastname` varchar(35) NOT NULL,
+  `reg_code` int(10) unsigned NOT NULL,
+  `reg_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `uname_pass_index` (`email`,`password_hash`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+
+--
+-- Дамп данных таблицы `users`
+--
+
+INSERT INTO `users` (`id`, `email`, `password_hash`, `phone`, `access_level`, `firstname`, `lastname`, `reg_code`, `reg_time`) VALUES
+(1, 'awd', 'awd', '12312312', 1, 'awd', 'awd', 123, '2014-10-22 20:00:00'),
+(2, 'awdawd', '1a1dc91c907325c69271ddf0c944bc72', '190889', 1, 'name', 'lastname', 2069, '2014-10-23 19:40:48'),
+(7, 'awawd', '1a1dc91c907325c69271ddf0c944bc72', '0867889', 1, 'name', 'lastname', 2563, '2014-10-23 19:44:50'),
+(8, '123wawd', '1a1dc91c907325c69271ddf0c944bc72', '12307889', 1, 'name', 'lastname', 9569, '2014-10-27 12:10:25'),
+(9, '1231wawd', '1a1dc91c907325c69271ddf0c944bc72', '123107889', 1, 'name', 'lastname', 3247, '2014-10-27 12:12:20'),
+(10, '12310wd', '1a1dc91c907325c69271ddf0c944bc72', '12310889', 1, 'name', 'lastname', 8556, '2014-10-27 19:26:42'),
+(11, '13wd', '1a1dc91c907325c69271ddf0c944bc72', '123139', 1, 'name', 'lastname', 2704, '2014-10-28 06:36:39'),
+(12, '133', '1a1dc91c907325c69271ddf0c944bc72', '1231319', 1, 'name', 'lastname', 9636, '2014-10-28 06:38:40'),
+(13, '233', '1a1dc91c907325c69271ddf0c944bc72', '1221319', 1, 'name', 'lastname', 604, '2014-10-28 06:39:31'),
+(14, '333', '1a1dc91c907325c69271ddf0c944bc72', '122319', 1, 'name', 'lastname', 4518, '2014-10-28 06:40:01'),
+(15, '3555', '1a1dc91c907325c69271ddf0c944bc72', '1223195', 1, 'name', 'lastname', 8598, '2014-10-28 06:40:43'),
+(16, '35155', '1a1dc91c907325c69271ddf0c944bc72', '12123195', 1, 'name', 'lastname', 459, '2014-10-28 06:41:30'),
+(17, '351555', '1a1dc91c907325c69271ddf0c944bc72', '132', 1, 'name', 'lastname', 1477, '2014-10-28 06:53:39'),
+(18, 'qwe', '76d80224611fc919a5d54f0ff9fba446', '1dd32', 1, 'name', 'lastname', 6210, '2014-10-29 12:28:02');
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
