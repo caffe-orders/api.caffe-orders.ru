@@ -137,6 +137,30 @@ class Users extends Module implements Module_Interface
             return $queryResponseData;
         });        
         
+        $this->get('fullinfolist', 10, function($args)
+        {
+            $parametersArray = array(
+                'limit',
+                'offset'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {
+                $offset = (int)$args['offset'];
+                $limit = (int)$args['limit'];
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM users ORDER BY id DESC LIMIT :offset , :limit');
+                $query->bindParam(':offset',$offset , PDO::PARAM_INT); 
+                $query->bindParam(':limit', $limit, PDO::PARAM_INT); 
+                $query->execute();
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll());
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
         //create new user PUT responce type
         $this->get('new', 0, function($args)
         {
@@ -166,7 +190,7 @@ class Users extends Module implements Module_Interface
                         ':phone' => $args['phone'], 
                         ':firstname' => $args['firstname'],
                         ':lastname' => $args['lastname'], 
-                        ':access_level' => 1,                             
+                        ':access_level' => 0,                             
                         ':reg_code' => $generatedRegCode, 
                         ':reg_time' => date('Y-m-d H:i:s')
                     );
@@ -193,7 +217,7 @@ class Users extends Module implements Module_Interface
         });
         
         //that function receives a registration code POST responce type
-        $this->get('code', 0, function($args)
+        $this->get('code', 1, function($args)
         {
             $parametersArray = array(
                 'id',
@@ -202,11 +226,54 @@ class Users extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {            
-                
+                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, reg_code, reg_time FROM users WHERE id = :id');
+                $query->execute(array(':id' => $args['id']));
+                $result = $query->fetch();
+                if($result)
+                {
+                    if($result['access_level']==0)
+                    {
+                        $timeNow = date('Y-m-d H:i:s', mktime(date("H"), date("i")-2, date("s"), date("m"), date("d"), date("Y")));
+                        $timeReg = $result['reg_time'];
+                        if($timeNow > $timeReg)
+                        {
+                            $generatedRegCode = rand(0,9999);
+                            //send sms
+                            $query = DbWorker::GetInstance()->prepare('UPDATE users SET reg_code = :reg_code , reg_time = :reg_time WHERE id = :id');
+                            $query->execute(array(':id' => $args['id'], ':reg_code' => $generatedRegCode, ':reg_time' => date('Y-m-d H:i:s')));
+                            $queryResponseData = array('err_code' => '400', 'data' => 'time lose'.$generatedRegCode);    
+                        }
+                        else
+                        {                        
+                            if($result['reg_code']==$args['code'])
+                            {                                
+                                $query = DbWorker::GetInstance()->prepare('UPDATE users SET access_level = 1, reg_code = 0 , reg_time = :reg_time WHERE id = :id');
+                                $query->execute(array(':id' => $args['id'], ':reg_time' => date('Y-m-d H:i:s')));
+                                $queryResponseData = array('err_code' => '200', 'data' => 'user activated');
+                            }
+                            else
+                            {
+                                $generatedRegCode = rand(0,9999);
+                                //send sms
+                                $query = DbWorker::GetInstance()->prepare('UPDATE users SET reg_code = :reg_code , reg_time = :reg_time WHERE id = :id');
+                                $query->execute(array(':id' => $args['id'], ':reg_code' => $generatedRegCode, ':reg_time' => date('Y-m-d H:i:s')));
+                                $queryResponseData = array('err_code' => '400', 'data' => 'entered code incorrect'.$generatedRegCode);
+                            }
+                        }    
+                    }
+                    else
+                    {
+                        $queryResponseData = array('err_code' => '200', 'data' => 'user activated');
+                    }
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '400', 'data' => 'entered code incorrect');
+                }
             }
             else
             {                
-                $queryResponseData = array('err_code' => '401', 'data' => 'args error');
+                $queryResponseData = array('err_code' => '602', 'data' => 'args error');
             }
             
             return $queryResponseData;
