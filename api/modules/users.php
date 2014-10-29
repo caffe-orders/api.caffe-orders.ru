@@ -220,14 +220,14 @@ class Users extends Module implements Module_Interface
         $this->get('code', 1, function($args)
         {
             $parametersArray = array(
-                'id',
+                'email',
                 'code'
             );
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {            
-                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, reg_code, reg_time FROM users WHERE id = :id');
-                $query->execute(array(':id' => $args['id']));
+                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, reg_code, reg_time FROM users WHERE email = :email');
+                $query->execute(array(':email' => $args['email']));
                 $result = $query->fetch();
                 if($result)
                 {
@@ -239,24 +239,24 @@ class Users extends Module implements Module_Interface
                         {
                             $generatedRegCode = rand(0,9999);
                             //send sms
-                            $query = DbWorker::GetInstance()->prepare('UPDATE users SET reg_code = :reg_code , reg_time = :reg_time WHERE id = :id');
-                            $query->execute(array(':id' => $args['id'], ':reg_code' => $generatedRegCode, ':reg_time' => date('Y-m-d H:i:s')));
+                            $query = DbWorker::GetInstance()->prepare('UPDATE users SET reg_code = :reg_code , reg_time = :reg_time WHERE email = :email');
+                            $query->execute(array(':email' => $args['email'], ':reg_code' => $generatedRegCode, ':reg_time' => date('Y-m-d H:i:s')));
                             $queryResponseData = array('err_code' => '400', 'data' => 'time lose'.$generatedRegCode);    
                         }
                         else
                         {                        
                             if($result['reg_code']==$args['code'])
                             {                                
-                                $query = DbWorker::GetInstance()->prepare('UPDATE users SET access_level = 1, reg_code = 0 , reg_time = :reg_time WHERE id = :id');
-                                $query->execute(array(':id' => $args['id'], ':reg_time' => date('Y-m-d H:i:s')));
+                                $query = DbWorker::GetInstance()->prepare('UPDATE users SET access_level = 1, reg_code = 0 , reg_time = :reg_time WHERE email = :email');
+                                $query->execute(array(':email' => $args['email'], ':reg_time' => date('Y-m-d H:i:s')));
                                 $queryResponseData = array('err_code' => '200', 'data' => 'user activated');
                             }
                             else
                             {
                                 $generatedRegCode = rand(0,9999);
                                 //send sms
-                                $query = DbWorker::GetInstance()->prepare('UPDATE users SET reg_code = :reg_code , reg_time = :reg_time WHERE id = :id');
-                                $query->execute(array(':id' => $args['id'], ':reg_code' => $generatedRegCode, ':reg_time' => date('Y-m-d H:i:s')));
+                                $query = DbWorker::GetInstance()->prepare('UPDATE users SET reg_code = :reg_code , reg_time = :reg_time WHERE email = :email');
+                                $query->execute(array(':email' => $args['email'], ':reg_code' => $generatedRegCode, ':reg_time' => date('Y-m-d H:i:s')));
                                 $queryResponseData = array('err_code' => '400', 'data' => 'entered code incorrect'.$generatedRegCode);
                             }
                         }    
