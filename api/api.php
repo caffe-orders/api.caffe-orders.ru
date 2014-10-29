@@ -71,16 +71,16 @@ class Api
     }
     // returns access level if user is logged in, if not return 0
     private function checkAccessLevel()
-    {
-        $userId = $_SESSION['id'];
+    {        
         $accessLevel = 0;
-        if(isset($userId))
+        if(isset($_SESSION['id']))
         {
+            $userId = $_SESSION['id'];
             $query = DbWorker::GetInstance()->prepare('SELECT access_level FROM users WHERE id = ?');
-            $query->execute(array($args['id']));
+            $query->execute(array($userId));
             $queryResponseData = $query->fetch();
             
-            if(count($queryResponceData) == 1)
+            if(count($queryResponseData) == 1)
             {
                 $accessLevel = $queryResponseData['access_level'];
             }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 class Users extends Module implements Module_Interface
 {    
     public function __construct()
@@ -12,8 +12,8 @@ class Users extends Module implements Module_Interface
     public function RunModuleFunction($functionType, $functionName,  $functionArgs,  $accessLevel)
     {
         $this->_functionArgs = $functionArgs;
-        $functionType = strtolower($functionType);
         $functionName = strtolower($functionName);
+        $functionType = strtolower($functionType);
         $outputData = function($args)
         {
             return array('err_code' => '400');
@@ -112,7 +112,7 @@ class Users extends Module implements Module_Interface
         });
         
         //return user list GET responce type
-        $this->get('list', 0, function($args)
+        $this->get('list', 1, function($args)
         {
             $parametersArray = array(
                 'limit',
@@ -123,7 +123,7 @@ class Users extends Module implements Module_Interface
             {
                 $offset = (int)$args['offset'];
                 $limit = (int)$args['limit'];
-                $query = DbWorker::GetInstance()->prepare('SELECT * FROM users ORDER BY id DESC LIMIT :offset , :limit');
+                $query = DbWorker::GetInstance()->prepare('SELECT id, access_level, firstname, lastname FROM users ORDER BY id DESC LIMIT :offset , :limit');
                 $query->bindParam(':offset',$offset , PDO::PARAM_INT); 
                 $query->bindParam(':limit', $limit, PDO::PARAM_INT); 
                 $query->execute();
@@ -157,7 +157,7 @@ class Users extends Module implements Module_Interface
                 {
                     $query = 'INSERT users (email, password_hash, phone, access_level, firstname, lastname,  reg_code, reg_time) 
                                 VALUES (:email, :password_hash, :phone, :access_level, :firstname, :lastname, :reg_code, :reg_time)';
-                    $generatedRegCode = rand(0,9999); //to be continued
+                    $generatedRegCode = rand(0,9999); //We need send this cod in phone user on sms message
                     
                     $query = DbWorker::GetInstance()->prepare($query);
                     $queryArgsList = array(
@@ -172,11 +172,11 @@ class Users extends Module implements Module_Interface
                     );
                     if($query->execute($queryArgsList))
                     {
-                        $queryResponseData = array('err_code' => '200');
+                        $queryResponseData = array('err_code' => '200','data' => $generatedRegCode);
                     }
                     else
                     {
-                        $queryResponseData = array('err_code' => '401');
+                        $queryResponseData = array('err_code' => '401','data' => 'Undefined error');
                     }        
                 }
                 else
@@ -187,6 +187,26 @@ class Users extends Module implements Module_Interface
             else
             {                
                 $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
+        //that function receives a registration code POST responce type
+        $this->get('code', 0, function($args)
+        {
+            $parametersArray = array(
+                'id',
+                'code'
+            );
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {            
+                
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '401', 'data' => 'args error');
             }
             
             return $queryResponseData;

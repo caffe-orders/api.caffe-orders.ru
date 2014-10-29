@@ -1,5 +1,5 @@
 <?php 
-class Users extends Module implements Module_Interface
+class Auth extends Module implements Module_Interface
 {    
     public function __construct()
     {        
