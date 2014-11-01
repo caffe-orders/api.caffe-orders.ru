@@ -169,6 +169,33 @@ class Rooms extends Module implements Module_Interface
             
             return $queryResponseData;
         });
+        
+        $this->get('delete', 1, function($args)
+        {
+            $requiredParams = array(
+                'id'
+            );
+           
+            $queryResponseData =  array();
+            if(Module::CheckFunctionArgs($requiredParams, $args))
+            {
+                $query = DbWorker::GetInstance()->prepare('DELETE FROM rooms WHERE id = :id');
+                
+                if($query->execute(array(':id' => $args['id'])))
+                {
+                    $queryResponseData = array('err_code' => '200'); 
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '603');
+                }
+            }
+            else
+            {
+                $queryResponseData = array('err_code' => '602');
+            }
+            return $queryResponseData;
+        });
     }
     
     public function SetPostFunctions()
