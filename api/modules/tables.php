@@ -191,8 +191,7 @@ class Tables extends Module implements Module_Interface
             $queryResponseData =  array();
             if(Module::CheckFunctionArgs($requiredParams, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('DELETE FROM tables WHERE id = :id');
-                
+                $query = DbWorker::GetInstance()->prepare('DELETE FROM tables WHERE id = :id');                
                 if($query->execute(array(':id' => $args['id'])))
                 {
                     $queryResponseData = array('err_code' => '200'); 
@@ -200,6 +199,43 @@ class Tables extends Module implements Module_Interface
                 else
                 {
                     $queryResponseData = array('err_code' => '603');
+                }
+            }
+            else
+            {
+                $queryResponseData = array('err_code' => '602');
+            }
+            return $queryResponseData;
+        });
+        
+        $this->get('status', 1, function($args)
+        {
+            $requiredParams = array(
+                'id',
+                'status'
+            );
+           
+            $queryResponseData =  array();
+            if(Module::CheckFunctionArgs($requiredParams, $args))
+            {                    
+                $query = DbWorker::GetInstance()->prepare('SELECT id FROM tables WHERE id = :id');
+                $query->execute(array(':id' => $args['id']));
+                $result = $query->fetch();
+                if($result)
+                {
+                    $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = :status WHERE id = :id');                
+                    if($query->execute(array(':id' => $args['id'], ':status' => $args['status'])))
+                    {
+                        $queryResponseData = array('err_code' => '200', 'data' => 'set status ok');
+                    }
+                    else
+                    {
+                        $queryResponseData = array('err_code' => '601');
+                    }    
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '400', 'data' => 'table not found');
                 }
             }
             else
