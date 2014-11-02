@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS `caffes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
+
 --
 -- Дамп данных таблицы `caffes`
 --

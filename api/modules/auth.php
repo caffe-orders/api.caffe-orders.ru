@@ -11,6 +11,7 @@ class Auth extends Module implements Module_Interface
     
     public function RunModuleFunction($functionType, $functionName,  $functionArgs,  $accessLevel)
     {
+        $this->_accessLevel = $accessLevel;
         $this->_functionArgs = $functionArgs;
         $functionType = strtolower($functionType);
         $functionName = strtolower($functionName);
@@ -78,7 +79,7 @@ class Auth extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, password_hash FROM users where email = ? GROUP BY password_hash');
+                $query = DbWorker::GetInstance()->prepare('SELECT id, password_hash FROM users WHERE email = ?');
                 $query->execute(array($args['email']));
                 if($response = $query->fetch())
                 {
@@ -101,7 +102,7 @@ class Auth extends Module implements Module_Interface
             return $queryResponseData;
         });
         
-        $this->get('logout', 1, function($args)
+        $this->get('logout', 0, function($args)
         {
             session_destroy();
             $queryResponseData = array('err_code' => '200');

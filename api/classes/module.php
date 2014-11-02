@@ -6,6 +6,8 @@ class Module
     protected $_putFunctionsList = array();
     protected $_deleteFunctionsList = array();
     
+    protected $_accessLevel;
+    
     public function __construct()
     {
         
@@ -49,6 +51,13 @@ class Module
             }
         }        
         return true;
+    }
+    
+    static public function RunOtherModuleFunction($moduleName, $functionName, $functionType, $functionArgs, $accessLevel)
+    {
+        $module = new $moduleName;
+        
+        return $module->RunModuleFunction($functionType, $functionName, $functionArgs, $accessLevel);
     }
 }
 ?>

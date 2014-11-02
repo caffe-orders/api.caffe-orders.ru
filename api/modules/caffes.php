@@ -11,6 +11,7 @@ class Caffes extends Module implements Module_Interface
     
     public function RunModuleFunction($functionType, $functionName,  $functionArgs,  $accessLevel)
     {
+        $this->_accessLevel = $accessLevel;
         $this->_functionArgs = $functionArgs;
         $functionName = strtolower($functionName);
         $functionType = strtolower($functionType);
@@ -68,19 +69,26 @@ class Caffes extends Module implements Module_Interface
     }     
     
     public function SetGetFunctions()
-    {
-        //returns info about selected caffe
-        $this->get('info', 1, function($args)
+    {   
+    //returns info about selected caffe
+        $this->get('info', 0, function($args)
         {
             $parametersArray = array(
                 'id'
             ); 
-            //(id, name, addres, phones, working_time, short_info, info, img, album)
+
+            $queryResponseData = array();
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, name, adress, phones, working_time, short_info, img, album FROM caffes WHERE id = :id');
-                $query->execute(array(':id' => $args['id']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+                $query = DbWorker::GetInstance()->prepare('SELECT id, name, address, telephones, working_time, short_info, info, wifi, type, rating, number_voters, sum_votes, preview_img, album_name FROM caffes WHERE id = :id');
+                if($query->execute(array(':id' => $args['id'])))
+                {
+                      $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '604');
+                }
             }
             else
             {                
@@ -90,19 +98,20 @@ class Caffes extends Module implements Module_Interface
             return $queryResponseData;
         });
         
-        $this->get('list', 1, function($args)
+        $this->get('list', 0, function($args)
         {
             $parametersArray = array(
                 'limit',
                 'offset'
             ); 
             
-            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
             {
                 $offset = (int)$args['offset'];
                 $limit = (int)$args['limit'];
-                //(id, name, address, phones, working_time, short_info, info, img, album)
-                $query = DbWorker::GetInstance()->prepare('SELECT id, name, address, phones, working_time, short_info, img, album FROM caffes ORDER BY id DESC LIMIT :offset , :limit');
+
+                $query = DbWorker::GetInstance()->prepare('SELECT id, name, address, telephones, working_time, short_info, info, wifi, type, rating, number_voters, sum_votes, preview_img, album_name FROM caffes ORDER BY id DESC LIMIT :offset , :limit');
                 $query->bindParam(':offset',$offset , PDO::PARAM_INT); 
                 $query->bindParam(':limit', $limit, PDO::PARAM_INT); 
                 $query->execute();
@@ -119,7 +128,62 @@ class Caffes extends Module implements Module_Interface
     
     public function SetPostFunctions()
     {
-        
+        $this->get('new', 0, function($args)
+        {
+            $parametersArray = array(
+                'name', 
+                'address', 
+                'telephones', 
+                'working_time', 
+                'short_info', 
+                'info', 
+                'wifi', 
+                'type', 
+                'rating', 
+                'number_voters', 
+                'sum_votes', 
+                'preview_img', 
+                'album_name'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $str = 'INSERT caffes (name, address, telephones, working_time, short_info, info, wifi, type, rating, number_voters, sum_votes, preview_img, album_name) VALUES (:name, :address, :telephones, :working_time, :short_info, :info, :wifi, :type, :rating, :number_voters, :sum_votes, :preview_img, :album_name)';
+                    
+                $query = DbWorker::GetInstance()->prepare($str);
+                $queryArgsList = array(
+                    ':name' => $args['name'], 
+                    ':address' => $args['address'], 
+                    ':telephones' => $args['telephones'], 
+                    ':working_time' => $args['working_time'], 
+                    ':short_info' => $args['short_info'], 
+                    ':info' => $args['info'], 
+                    ':wifi' => $args['wifi'], 
+                    ':type' => $args['type'], 
+                    ':rating' => $args['rating'], 
+                    ':number_voters' => $args['number_voters'], 
+                    ':sum_votes' => $args['sum_votes'], 
+                    ':preview_img' => $args['preview_img'], 
+                    ':album_name' => $args['album_name']
+                ); 
+                
+                if($query->execute($queryArgsList))
+                {
+                    $queryResponseData = array('err_code' => '200');
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '401','data' => 'Undefined error');
+                }        
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
     }
     
     public function SetPutFunctions()
@@ -130,54 +194,42 @@ class Caffes extends Module implements Module_Interface
     public function SetDeleteFunctions()
     {
         //can be not working
-        $this->delete('delete', 10, function($args)
+/*        $this->get('delete', 0, function($args)
         {
-            $requiredParams = array(
+            $parametersArray = array(
                 'id'
             );
            
-            $queryResponseData =  array();
-            if(Module::CheckFunctionArgs($requiredParams, $args))
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('DELETE FROM caffes WHERE id = :id');
-                if($query->execute(array(':id' => $args['id'])))
-                {
-                    $queryResponseData = array('err_code' => '200');
+                $caffeQuery = DbWorker::GetInstance->prepare('SELECT id FROM caffes WHERE id = :id');
+                $caffeQuery->execute(array(':id' => $args['id']))
                     
-                    $query = DbWorker::GetInstance()->prepare('DELETE FROM orders WHERE caffe_id = :id');
-                    if($query->execute(array(':id' => $args['id'])))
+                if($caffeQuery->fetch());
+                {
+                    $deleteCaffeQuery = DbWorker::GetInstance->prepare('DELETE FROM caffes WHERE id = :id');
+                    $deleteCaffeQuery->execute(array(':id' => $args['id']));
+                    
+                    $deleteRoomsQuery = DbWorker::GetInstance->prepare('SELECT DISTINCT id FROM rooms WHERE caffe_id = :id');
+                    
+                    if($deleteRoomsQuery->execute(array(':id' => $args['id'])))
                     {
-                        $queryResponseData = array('err_code' => '200');
-                        
-                        $query = DbWorker::GetInstance()->prepare('DELETE FROM rooms WHERE caffe_id = :id');
-                        if($query->execute(array(':id' => $args['id'])))
+                        while($data = $deleteRoomsQuery->fetch())
                         {
-                             $queryResponseData = array('err_code' => '200');
-                             
-                             $query = DbWorker::GetInstance()->prepare('DELETE FROM tables AS del_tables '
-                                 . 'INNER JOIN rooms AS rooms_data ON rooms_data.id = del_tables.room_index WHERE rooms_data.id = :id');
-                             if($query->execute(array(':id' => $args['id'])))
-                             {
-                                 $queryResponseData = array('err_code' => '200');
-                             }
-                             else
-                             {
-                                 $queryResponseData = array('err_code' => '603');
-                             }  
+                            $functionArgs = array('id' => $data['id']);
+                            Module::RunOtherModuleFunction('Rooms', 'delete', 'get', $this->_accessLevel, $functionArgs);
                         }
-                        else
-                        {
-                            $queryResponseData = array('err_code' => '603');
-                        }  
+                        $queryResponseData = array('err_code' => '200');
                     }
                     else
                     {
-                        $queryResponseData = array('err_code' => '603');
+                        $queryResponseData = array('err_code' => '604');
                     }
                 }
                 else
                 {
-                     $queryResponseData = array('err_code' => '603');
+                    $queryResponseData = array('err_code' => '604');
                 }
             }
             else
@@ -185,8 +237,7 @@ class Caffes extends Module implements Module_Interface
                 $queryResponseData = array('err_code' => '602');
             }
             return $queryResponseData;
-        });
-            
+        });*/
     }
 }
 ?>

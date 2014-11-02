@@ -20,7 +20,8 @@ class ErrorCodeDictionary
         '600' => '600 Access Denied',
         '601' => '601 Unknown Error Code',
         '602' => '602 Arguments Not Exists',
-        '603' => '603 Wrong Arguments'
+        '603' => '603 Wrong Arguments',
+        '604' => '604 Not Done'
     );
     
     static public function GetCode($key)
