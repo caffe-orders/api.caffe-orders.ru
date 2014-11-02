@@ -1,3 +1,11 @@
+-- phpMyAdmin SQL Dump
+-- version 3.5.4
+-- http://www.phpmyadmin.net
+--
+-- Хост: 83.69.230.13
+-- Время создания: Ноя 02 2014 г., 12:44
+-- Версия сервера: 5.1.67-log
+-- Версия PHP: 5.3.21
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -142,3 +150,7 @@ INSERT INTO `users` (`id`, `email`, `password_hash`, `phone`, `access_level`, `f
 (21, '1we', 'e946b5dc678735e0d7b9a5b20110d764', '232', 1, 'name', 'lastname', 0, '2014-10-29 15:12:57'),
 (22, '2e', 'e946b5dc678735e0d7b9a5b20110d764', '2', 0, 'name', 'lastname', 3393, '2014-10-29 15:16:00'),
 (23, '2123e', 'e946b5dc678735e0d7b9a5b20110d764', '233', 1, 'name', 'lastname', 0, '2014-10-29 16:35:51');
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

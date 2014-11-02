@@ -183,7 +183,15 @@ class Rooms extends Module implements Module_Interface
                 
                 if($query->execute(array(':id' => $args['id'])))
                 {
-                    $queryResponseData = array('err_code' => '200'); 
+                    $query = DbWorker::GetInstance()->prepare('DELETE FROM tables WHERE room_id = :id');
+                    if($query->execute(array(':id' => $args['id'])))
+                    {
+                        $queryResponseData = array('err_code' => '200'); 
+                    }
+                    else
+                    {
+                        $queryResponseData = array('err_code' => '603');
+                    }
                 }
                 else
                 {
