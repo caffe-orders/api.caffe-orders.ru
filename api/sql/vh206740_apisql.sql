@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 83.69.230.13
--- Время создания: Ноя 02 2014 г., 12:44
+-- Время создания: Ноя 09 2014 г., 16:41
 -- Версия сервера: 5.1.67-log
 -- Версия PHP: 5.3.21
 
@@ -42,15 +42,19 @@ CREATE TABLE IF NOT EXISTS `caffes` (
   `preview_img` varchar(40) NOT NULL,
   `album_name` varchar(25) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Дамп данных таблицы `caffes`
 --
 
 INSERT INTO `caffes` (`id`, `name`, `address`, `telephones`, `working_time`, `short_info`, `info`, `wifi`, `type`, `rating`, `number_voters`, `sum_votes`, `preview_img`, `album_name`) VALUES
-(1, 'цфв', 'фцв', '213123', '123', '21312', 'фцвфц', 1, 1, 1, 2, 9, 'фцвфцв', 'фцвфцв');
+(1, 'цфв', 'фцв', '213123', '123', '21312', 'фцвфц', 1, 1, 1, 2, 9, 'фцвфцв', 'фцвфцв'),
+(2, '1', '1', '1', '1', '1', '1', 1, 1, 1, 1, 1, '1', '1'),
+(3, '1', '1', '1', '1', '1', '1', 1, 1, 1, 1, 1, '1', '1'),
+(4, '1', '1', '1', '1', '1', '1', 1, 1, 1, 1, 1, '1', '1'),
+(5, '1', '1', '1', '1', '1', '1', 1, 1, 1, 1, 1, '1', '1'),
+(6, '1', '1', '1', '1', '1', '1', 1, 1, 1, 1, 1, '1', '1');
 
 -- --------------------------------------------------------
 
@@ -60,14 +64,12 @@ INSERT INTO `caffes` (`id`, `name`, `address`, `telephones`, `working_time`, `sh
 
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `caffe_id` int(11) NOT NULL,
-  `room_id` int(11) NOT NULL,
   `table_id` int(11) NOT NULL,
-  `username` varchar(18) NOT NULL,
-  `time` varchar(15) NOT NULL,
+  `user_id` varchar(18) NOT NULL,
+  `time` datetime NOT NULL,
   `type` int(11) NOT NULL,
   `status` int(11) NOT NULL,
-  `enter_time` varchar(15) NOT NULL,
+  `enter_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -116,8 +118,7 @@ CREATE TABLE IF NOT EXISTS `tables` (
 --
 
 INSERT INTO `tables` (`id`, `number`, `room_id`, `xPos`, `yPos`, `tableType`, `status`) VALUES
-(7, 6, 3, 1, 2, 1, 1),
-(8, 1, 3, 1, 2, 1, 1),
+(8, 1, 3, 1, 2, 1, 4),
 (9, 2, 3, 1, 2, 1, 1);
 
 -- --------------------------------------------------------
@@ -139,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `uname_pass_index` (`email`,`password_hash`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
 
 --
 -- Дамп данных таблицы `users`
@@ -150,7 +151,8 @@ INSERT INTO `users` (`id`, `email`, `password_hash`, `phone`, `access_level`, `f
 (20, '2we', '76d80224611fc919a5d54f0ff9fba446', '2dd32', 1, 'name', 'lastname', 8735, '2014-10-29 14:57:29'),
 (21, '1we', 'e946b5dc678735e0d7b9a5b20110d764', '232', 1, 'name', 'lastname', 0, '2014-10-29 15:12:57'),
 (22, '2e', 'e946b5dc678735e0d7b9a5b20110d764', '2', 0, 'name', 'lastname', 3393, '2014-10-29 15:16:00'),
-(23, '2123e', 'e946b5dc678735e0d7b9a5b20110d764', '233', 1, 'name', 'lastname', 0, '2014-10-29 16:35:51');
+(23, '2123e', 'e946b5dc678735e0d7b9a5b20110d764', '233', 1, 'name', 'lastname', 0, '2014-10-29 16:35:51'),
+(24, 'azaza', '202cb962ac59075b964b07152d234b70', '123123', 0, 'name', 'familiableat', 1179, '2014-11-02 15:14:47');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
