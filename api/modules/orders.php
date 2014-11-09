@@ -73,14 +73,14 @@ class Orders extends Module implements Module_Interface
         $this->get('info', 1, function($args)
         {
             $parametersArray = array(
-                'room_id'
+                'order_id'
             ); 
             //(id, name, addres, phones, working_time, short_info, info, img, album)
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT * FROM tables WHERE room_id = :room_id');
-                $query->execute(array(':room_id' => $args['room_id']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll());
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE id = :order_id');
+                $query->execute(array(':order_id' => $args['order_id']));
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
             }
             else
             {                
@@ -95,7 +95,7 @@ class Orders extends Module implements Module_Interface
             $parametersArray = array(
                 'limit',
                 'offset',
-                'room_id'
+                'order_id'
             ); 
             
             if(Module::CheckFunctionArgs($parametersArray, $args) == true)
@@ -104,10 +104,10 @@ class Orders extends Module implements Module_Interface
                 $limit = (int)$args['limit'];
                 $caffe_id = (int)$args['room_id'];
                 //(id, name, address, phones, working_time, short_info, info, img, album)
-                $query = DbWorker::GetInstance()->prepare('SELECT * FROM tables WHERE room_id = :room_id ORDER BY id DESC LIMIT :offset , :limit');
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE order_id = :order_id ORDER BY id DESC LIMIT :offset , :limit');
                 $query->bindParam(':offset',$offset , PDO::PARAM_INT); 
                 $query->bindParam(':limit', $limit, PDO::PARAM_INT); 
-                $query->bindParam(':room_id', $caffe_id, PDO::PARAM_INT); 
+                $query->bindParam(':order_id', $caffe_id, PDO::PARAM_INT); 
                 $query->execute();
                 $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll());
             }
@@ -120,58 +120,61 @@ class Orders extends Module implements Module_Interface
         });
         
         //create new room PUT responce type
-        $this->get('new', 1, function($args)
+        $this->get('newshort', 0, function($args)
         {
             $parametersArray = array(
-                'number',
-                'room_id',
-                'xPos',
-                'yPos',
-                'tableType',
-                'status'
+                'table_id'
             ); 
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id FROM rooms WHERE id = :room_id');
-                $query->execute(array(':room_id' => $args['room_id']));
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM tables WHERE id = :table_id');
+                $query->execute(array(':table_id' => (int)$args['table_id']));
                 $result = $query->fetch();
                 if($result)
                 {
-                    $query = DbWorker::GetInstance()->prepare('SELECT id FROM tables WHERE number = :number AND room_id = :room_id');
-                    $query->execute(array(':number' => $args['number'], ':room_id' => $args['room_id']));
-                    $result = $query->fetch();
-                    if(!$result)
+                    if((int)$result['status'] == 0)
                     {
-                        $queryStr = 'INSERT tables (number, room_id, xPos, yPos, tableType, status) 
-                                VALUES (:number, :room_id, :xPos, :yPos, :tableType, :status)';                    
-                        $query = DbWorker::GetInstance()->prepare($queryStr);
-                    
-                        $queryArgsList = array(
-                            ':number' => $args['number'],
-                            ':room_id' => $args['room_id'],
-                            ':xPos' => $args['xPos'],
-                            ':yPos' => $args['yPos'],
-                            ':tableType' => $args['tableType'],
-                            ':status' => $args['status']
-                        );
-                        if($query->execute($queryArgsList))
+                        $userId = (int)$_SESSION['id'];
+                        $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE user_id = :user_id');
+                        $query->execute(array(':user_id' => $userId));
+                        $result = $query->fetch();
+                        if(!$result)
                         {
-                            $queryResponseData = array('err_code' => '200');
+                            $queryStr = 'INSERT orders (table_id, user_id, time, type, status, enter_time) 
+                                VALUES (:table_id, :user_id, :time, :type, :status, :enter_time)';                    
+                            $query = DbWorker::GetInstance()->prepare($queryStr);
+                    
+                            $queryArgsList = array(
+                            ':table_id' => (int)$args['table_id'], 
+                            ':user_id' => $userId,
+                            ':time' => date('Y-m-d H:i:s'),
+                            ':type' => 1,
+                            ':status' => 1, 
+                            ':enter_time' => date('Y-m-d H:i:s')
+                            );
+                            if($query->execute($queryArgsList))
+                            {
+                                $queryResponseData = array('err_code' => '200');
+                            }
+                            else
+                            {
+                                $queryResponseData = array('err_code' => '401','data' => 'Undefined error');
+                            }
                         }
                         else
                         {
-                            $queryResponseData = array('err_code' => '401','data' => 'Undefined error');
-                        }  
+                            $queryResponseData = array('err_code' => '401','data' => 'The user has already registered table');
+                        }
                     }
                     else
                     {
-                        $queryResponseData = array('err_code' => '401','data' => 'Table exist');
-                    }
+                        $queryResponseData = array('err_code' => '400', 'data' => 'Table busy');
+                    }    
                 }
                 else
                 {
-                    $queryResponseData = array('err_code' => '400', 'data' => 'room in not found');
+                    $queryResponseData = array('err_code' => '400', 'data' => 'Table in not found');
                 }
             }
             else
@@ -185,58 +188,35 @@ class Orders extends Module implements Module_Interface
         $this->get('delete', 1, function($args)
         {
             $requiredParams = array(
-                'id'
+                'order_id'
             );
            
             $queryResponseData =  array();
             if(Module::CheckFunctionArgs($requiredParams, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('DELETE FROM tables WHERE id = :id');                
-                if($query->execute(array(':id' => $args['id'])))
-                {
-                    $queryResponseData = array('err_code' => '200'); 
-                }
-                else
-                {
-                    $queryResponseData = array('err_code' => '603');
-                }
-            }
-            else
-            {
-                $queryResponseData = array('err_code' => '602');
-            }
-            return $queryResponseData;
-        });
-        
-        $this->get('status', 1, function($args)
-        {
-            $requiredParams = array(
-                'id',
-                'status'
-            );
-           
-            $queryResponseData =  array();
-            if(Module::CheckFunctionArgs($requiredParams, $args))
-            {                    
-                $query = DbWorker::GetInstance()->prepare('SELECT id FROM tables WHERE id = :id');
-                $query->execute(array(':id' => $args['id']));
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE id = :order_id');     
+                $query->execute(array(':order_id' => $args['order_id']));
                 $result = $query->fetch();
                 if($result)
                 {
-                    $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = :status WHERE id = :id');                
-                    if($query->execute(array(':id' => $args['id'], ':status' => $args['status'])))
+                    $tableId = (int)$result['table_id'];
+                    $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = 0 WHERE id = :id');     
+                    $query->execute(array(':id' => $tableId));
+                                    
+                    $query = DbWorker::GetInstance()->prepare('DELETE FROM orders WHERE id = :order_id');                
+                    if($query->execute(array(':order_id' => $args['order_id'])))
                     {
-                        $queryResponseData = array('err_code' => '200', 'data' => 'set status ok');
+                        $queryResponseData = array('err_code' => '200'); 
                     }
                     else
                     {
-                        $queryResponseData = array('err_code' => '601');
-                    }    
+                        $queryResponseData = array('err_code' => '603');
+                    }
                 }
                 else
                 {
-                    $queryResponseData = array('err_code' => '400', 'data' => 'table not found');
-                }
+                    $queryResponseData = array('err_code' => '604');
+                }   
             }
             else
             {
