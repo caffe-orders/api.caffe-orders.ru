@@ -86,7 +86,7 @@ class Auth extends Module implements Module_Interface
                     if($response['password_hash'] == md5($args['password']))
                     {
                         $_SESSION['id'] = $response['id'];
-                        $queryResponseData = array('err_code' => '200');
+                        $queryResponseData = array('err_code' => '200', 'data' => $response['access_level']);
                     }
                     else
                     {
