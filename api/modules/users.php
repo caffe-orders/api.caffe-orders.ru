@@ -90,7 +90,7 @@ class Users extends Module implements Module_Interface
             return $queryResponseData;
         });
                 
-        $this->get('login', 10, function($args)
+         $this->get('login', 10, function($args)
         {
             $parametersArray = array(
                 'email',
@@ -99,7 +99,7 @@ class Users extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, email, access_level FROM users WHERE email = ?');
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM users WHERE email = ?');
                 $query->execute(array($args['email']));
                 if($response = $query->fetch())
                 {
