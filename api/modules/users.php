@@ -90,6 +90,37 @@ class Users extends Module implements Module_Interface
             return $queryResponseData;
         });
                 
+        $this->get('login', 10, function($args)
+        {
+            $parametersArray = array(
+                'email',
+                'password'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT id, email, access_level FROM users WHERE email = ?');
+                $query->execute(array($args['email']));
+                if($response = $query->fetch())
+                {
+                    if($response['password_hash'] == md5($args['password']))
+                    {
+                        $queryResponseData = array('err_code' => '200', 'data' => $response);
+                    }
+                    else
+                    {
+                        $queryResponseData = array('err_code' => '401');
+                    }
+                }
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '400');
+            }
+            
+            return $queryResponseData;
+        });
+        
         //return user info GET responce type
         $this->get('info', 1, function($args)
         {
