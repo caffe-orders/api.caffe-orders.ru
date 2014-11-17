@@ -78,7 +78,7 @@ class Users extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args) == true)
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, mail, password_hash, phone, access_level, firstname, lastname, reg_code FROM users WHERE id = ?');
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM users WHERE id = ?');
                 $query->execute(array($args['id']));
                 $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
             }
@@ -90,20 +90,31 @@ class Users extends Module implements Module_Interface
             return $queryResponseData;
         });
                 
-         $this->get('login', 10, function($args)
+        $this->get('login', 10, function($args)
         {
-            $parametersArray = array(
-                'email',
-                'password'
-            ); 
-            
-            if(Module::CheckFunctionArgs($parametersArray, $args))
+            if(isset($args['email']) && isset($agrs['password']))
             {
                 $query = DbWorker::GetInstance()->prepare('SELECT * FROM users WHERE email = ?');
                 $query->execute(array($args['email']));
                 if($response = $query->fetch())
                 {
                     if($response['password_hash'] == md5($args['password']))
+                    {
+                        $queryResponseData = array('err_code' => '200', 'data' => $response);
+                    }
+                    else
+                    {
+                        $queryResponseData = array('err_code' => '401');
+                    }
+                }
+            }
+            elseif(isset($args['id']) && isset($agrs['key']))
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM users WHERE id = ?');
+                $query->execute(array($args['id']));
+                if($response = $query->fetch())
+                {
+                    if($response['secret_key'] == $args['key'])
                     {
                         $queryResponseData = array('err_code' => '200', 'data' => $response);
                     }
@@ -210,14 +221,15 @@ class Users extends Module implements Module_Interface
                 $result = $query->fetch();
                 if(!$result)
                 {
-                    $query = 'INSERT users (email, password_hash, phone, access_level, firstname, lastname,  reg_code, reg_time) 
-                                VALUES (:email, :password_hash, :phone, :access_level, :firstname, :lastname, :reg_code, :reg_time)';
+                    $query = 'INSERT users (email, password_hash, secret_key, phone, access_level, firstname, lastname,  reg_code, reg_time) 
+                                VALUES (:email, :password_hash, :secret_key, :phone, :access_level, :firstname, :lastname, :reg_code, :reg_time)';
                     $generatedRegCode = rand(0,9999); //We need send this cod in phone user on sms message
                     
                     $query = DbWorker::GetInstance()->prepare($query);
                     $queryArgsList = array(
                         ':email' => $args['email'],
                         ':password_hash' => md5($args['password']),
+                        ':secret_key' => md5($args['password'].$agrs['phone']),
                         ':phone' => $args['phone'], 
                         ':firstname' => $args['firstname'],
                         ':lastname' => $args['lastname'], 

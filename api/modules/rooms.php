@@ -80,7 +80,7 @@ class Rooms extends Module implements Module_Interface
             {
                 $query = DbWorker::GetInstance()->prepare('SELECT * FROM rooms WHERE caffe_id = :caffe_id');
                 $query->execute(array(':caffe_id' => $args['caffe_id']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll());
             }
             else
             {                
