@@ -82,7 +82,7 @@ class Api
             
             if(count($queryResponseData) == 1)
             {
-                $accessLevel = 1;
+                $accessLevel = $queryResponseData;
             }
 
         }
