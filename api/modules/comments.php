@@ -90,9 +90,29 @@ class comments extends Module implements Module_Interface
             //(id, name, addres, phones, working_time, short_info, info, img, album)
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT * FROM comments WHERE id = :id');
+                $query = DbWorker::GetInstance()->prepare('SELECT id, user_id, comment FROM comments WHERE id = :id');
                 $query->execute(array(':id' => $args['id']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+                $result = $query->fetch();
+                if($result != false)
+                {
+                    $query = DbWorker::GetInstance()->prepare('SELECT * FROM users WHERE id = :id');
+                    $query->execute(array(':id' => $result['user_id']));
+                    $resultUser = $query->fetch();
+                    if($resultUser != false)
+                    {
+                        $result['firstname'] = $resultUser['firstname'];
+                        $result['lastname'] = $resultUser['lastname'];
+                        $queryResponseData = array('err_code' => '200', 'data' => $result);
+                    }
+                    else
+                    {
+                        $queryResponseData = array('err_code' => '602');
+                    }
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '604');
+                }                
             }
             else
             {                
@@ -124,7 +144,33 @@ class comments extends Module implements Module_Interface
                 $query->bindParam(':record_type', $record_type, PDO::PARAM_INT); 
                 $query->bindParam(':record_id', $record_id, PDO::PARAM_INT); 
                 $query->execute();
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll());
+                $result = $query->fetchAll();
+                if($result != false)
+                {
+                    $sendData = array();
+                    foreach($result as $item)
+                    {
+                        $query = DbWorker::GetInstance()->prepare('SELECT * FROM users WHERE id = :id');
+                        $query->execute(array(':id' => $item['user_id']));
+                        $resultUser = $query->fetch();
+                        if($resultUser != false)
+                        {
+                            $sendData[] = array
+                            (
+                                'id' => $item['id'],
+                                'firstname' => $resultUser['firstname'],
+                                'lastname' => $resultUser['lastname'],
+                                'user_id' => $item['user_id'],
+                                'comment' => $item['comment']
+                            );
+                        }
+                    }
+                    $queryResponseData = array('err_code' => '200', 'data' => $sendData);
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '604');
+                }
             }
             else
             {                
