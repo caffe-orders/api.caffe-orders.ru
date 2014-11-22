@@ -80,7 +80,7 @@ class Caffes extends Module implements Module_Interface
             $queryResponseData = array();
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, name, address, telephones, working_time, short_info, info, wifi, type, rating, number_voters, sum_votes, preview_img, album_name FROM caffes WHERE id = :id');
+                $query = DbWorker::GetInstance()->prepare('SELECT id, name, address, telephones, working_time, short_info, info, wifi, type, average_check, rating, number_voters, sum_votes, preview_img, album_name FROM caffes WHERE id = :id');
                 if($query->execute(array(':id' => $args['id'])))
                 {
                       $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
@@ -111,7 +111,7 @@ class Caffes extends Module implements Module_Interface
                 $offset = (int)$args['offset'];
                 $limit = (int)$args['limit'];
 
-                $query = DbWorker::GetInstance()->prepare('SELECT id, name, address, telephones, working_time, short_info, info, wifi, type, rating, number_voters, sum_votes, preview_img, album_name FROM caffes ORDER BY id DESC LIMIT :offset , :limit');
+                $query = DbWorker::GetInstance()->prepare('SELECT id, name, address, telephones, working_time, short_info, info, wifi, type, average_check, rating, number_voters, sum_votes, preview_img, album_name FROM caffes ORDER BY id DESC LIMIT :offset , :limit');
                 $query->bindParam(':offset',$offset , PDO::PARAM_INT); 
                 $query->bindParam(':limit', $limit, PDO::PARAM_INT); 
                 $query->execute();
@@ -139,6 +139,7 @@ class Caffes extends Module implements Module_Interface
                 'info', 
                 'wifi', 
                 'type', 
+                'average_check',
                 'rating', 
                 'number_voters', 
                 'sum_votes', 
@@ -149,7 +150,8 @@ class Caffes extends Module implements Module_Interface
             $queryResponseData = array();
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $str = 'INSERT caffes (name, address, telephones, working_time, short_info, info, wifi, type, rating, number_voters, sum_votes, preview_img, album_name) VALUES (:name, :address, :telephones, :working_time, :short_info, :info, :wifi, :type, :rating, :number_voters, :sum_votes, :preview_img, :album_name)';
+                $str = 'INSERT caffes (name, address, telephones, working_time, short_info, info, wifi, type, average_check, rating, number_voters, sum_votes, preview_img, album_name)'
+                        . ' VALUES (:name, :address, :telephones, :working_time, :short_info, :info, :wifi, :type, :average_check, :rating, :number_voters, :sum_votes, :preview_img, :album_name)';
                     
                 $query = DbWorker::GetInstance()->prepare($str);
                 $queryArgsList = array(
@@ -161,6 +163,7 @@ class Caffes extends Module implements Module_Interface
                     ':info' => $args['info'], 
                     ':wifi' => $args['wifi'], 
                     ':type' => $args['type'], 
+                    ':average_check' => $args['average_check'],
                     ':rating' => $args['rating'], 
                     ':number_voters' => $args['number_voters'], 
                     ':sum_votes' => $args['sum_votes'], 
