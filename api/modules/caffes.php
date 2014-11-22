@@ -177,7 +177,7 @@ class Caffes extends Module implements Module_Interface
                 }
                 else
                 {
-                    $queryResponseData = array('err_code' => '401','data' => 'Undefined error');
+                    $queryResponseData = array('err_code' => '401');
                 }        
             }
             else
