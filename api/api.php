@@ -72,7 +72,7 @@ class Api
     // returns access level if user is logged in, if not return 0
     private function checkAccessLevel()
     {        
-        $accessLevel = 0;
+        $accessLevel = 10;
         if(isset($_SESSION['id']))
         {
             $userId = (int)$_SESSION['id'];
@@ -82,7 +82,8 @@ class Api
             
             if(count($queryResponseData) == 1)
             {
-                $accessLevel = $queryResponseData;
+                //$accessLevel = $queryResponseData;
+                $accessLevel = 10;
             }
 
         }

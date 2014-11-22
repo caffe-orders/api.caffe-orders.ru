@@ -92,7 +92,7 @@ class Users extends Module implements Module_Interface
                 
         $this->get('login', 10, function($args)
         {
-            if(isset($args['email']) && isset($agrs['password']))
+            if(isset($args['email']) && isset($args['password']))
             {
                 $query = DbWorker::GetInstance()->prepare('SELECT * FROM users WHERE email = ?');
                 $query->execute(array($args['email']));
@@ -108,7 +108,7 @@ class Users extends Module implements Module_Interface
                     }
                 }
             }
-            elseif(isset($args['id']) && isset($agrs['key']))
+            elseif(isset($args['id']) && isset($args['key']))
             {
                 $query = DbWorker::GetInstance()->prepare('SELECT * FROM users WHERE id = ?');
                 $query->execute(array($args['id']));
