@@ -140,7 +140,6 @@ class Caffes extends Module implements Module_Interface
                 'wifi', 
                 'type', 
                 'average_check',
-                'rating', 
                 'number_voters', 
                 'sum_votes', 
                 'preview_img', 
@@ -164,7 +163,7 @@ class Caffes extends Module implements Module_Interface
                     ':wifi' => $args['wifi'], 
                     ':type' => $args['type'], 
                     ':average_check' => $args['average_check'],
-                    ':rating' => $args['rating'], 
+                    ':rating' => 0, 
                     ':number_voters' => $args['number_voters'], 
                     ':sum_votes' => $args['sum_votes'], 
                     ':preview_img' => $args['preview_img'], 
@@ -173,7 +172,7 @@ class Caffes extends Module implements Module_Interface
                 
                 if($query->execute($queryArgsList))
                 {
-                    $queryResponseData = array('err_code' => '200');
+                    $queryResponseData = array('err_code' => '200','data' => $query->lastInsertId());
                 }
                 else
                 {
