@@ -223,7 +223,7 @@ class Users extends Module implements Module_Interface
                 {
                     $query = 'INSERT users (email, password_hash, secret_key, phone, access_level, firstname, lastname,  reg_code, reg_time) 
                                 VALUES (:email, :password_hash, :secret_key, :phone, :access_level, :firstname, :lastname, :reg_code, :reg_time)';
-                    $generatedRegCode = rand(0,9999); //We need send this cod in phone user on sms message
+                    $generatedRegCode = rand(1000,9999); //We need send this cod in phone user on sms message
                     
                     $query = DbWorker::GetInstance()->prepare($query);
                     $queryArgsList = array(
@@ -280,11 +280,12 @@ class Users extends Module implements Module_Interface
                         $timeReg = $result['reg_time'];
                         if($timeNow > $timeReg)
                         {
-                            $generatedRegCode = rand(0,9999);
+                            $generatedRegCode = rand(1000,9999);
                             //send sms
                             $query = DbWorker::GetInstance()->prepare('UPDATE users SET reg_code = :reg_code , reg_time = :reg_time WHERE email = :email');
                             $query->execute(array(':email' => $args['email'], ':reg_code' => $generatedRegCode, ':reg_time' => date('Y-m-d H:i:s')));
-                            $queryResponseData = array('err_code' => '400', 'data' => 'time lose'.$generatedRegCode);    
+                            //отправка нового кода
+                            $queryResponseData = array('err_code' => '400', 'data' => 'time lose');    
                         }
                         else
                         {                        
@@ -296,11 +297,12 @@ class Users extends Module implements Module_Interface
                             }
                             else
                             {
-                                $generatedRegCode = rand(0,9999);
+                                $generatedRegCode = rand(1000,9999);
                                 //send sms
                                 $query = DbWorker::GetInstance()->prepare('UPDATE users SET reg_code = :reg_code , reg_time = :reg_time WHERE email = :email');
                                 $query->execute(array(':email' => $args['email'], ':reg_code' => $generatedRegCode, ':reg_time' => date('Y-m-d H:i:s')));
-                                $queryResponseData = array('err_code' => '400', 'data' => 'entered code incorrect'.$generatedRegCode);
+                                //отправка кода
+                                $queryResponseData = array('err_code' => '400', 'data' => 'entered code incorrect');
                             }
                         }    
                     }
@@ -311,12 +313,12 @@ class Users extends Module implements Module_Interface
                 }
                 else
                 {
-                    $queryResponseData = array('err_code' => '400', 'data' => 'entered code incorrect');
+                    $queryResponseData = array('err_code' => '400', 'data' => 'email incorrect');
                 }
             }
             else
             {                
-                $queryResponseData = array('err_code' => '602', 'data' => 'args error');
+                $queryResponseData = array('err_code' => '602');
             }
             
             return $queryResponseData;
