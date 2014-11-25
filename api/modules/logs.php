@@ -130,19 +130,21 @@ class Logs extends Module implements Module_Interface
         $this->get('new', 0, function($args)
         {
             $parametersArray = array(
-                'user_id', 
+                'user_id',
+                'ip',
                 'process'
             ); 
             
             $queryResponseData = array();
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $str = 'INSERT logs (user_id, process, date) VALUES (:user_id, :process, :date)';
+                $str = 'INSERT logs (user_id, ip, process, date) VALUES (:user_id, :ip, :process, :date)';
                     
                 $query = DbWorker::GetInstance()->prepare($str);
                 $queryArgsList = array(                     
                     ':user_id' => $args['user_id'], 
                     ':process' => $args['process'], 
+                    ':ip' => $args['ip'], 
                     ':date' => date('Y-m-d H:i:s')
                 ); 
                 
