@@ -186,6 +186,98 @@ class Caffes extends Module implements Module_Interface
             
             return $queryResponseData;
         });
+        
+        $this->get('edit', 0, function($args)
+        {
+            $parametersArray = array(
+                'id',
+                'name', 
+                'address', 
+                'telephones', 
+                'working_time', 
+                'short_info', 
+                'info', 
+                'wifi', 
+                'type', 
+                'average_check',
+                'number_voters', 
+                'sum_votes', 
+                'preview_img', 
+                'album_name'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $str = 'UPDATE caffes SET name = :name, address = :address, telephones = :telephones, working_time = :working_time, short_info = :short_info, info = :info, wifi = :wifi, type =:type, average_check = :average_check, rating = :rating, number_voters = :number_voters, sum_votes = :sum_votes, preview_img = :preview_img, album_name = :album_name WHERE id =:id';
+                    
+                $query = DbWorker::GetInstance()->prepare($str);
+                $queryArgsList = array(
+                    ':id' => $args['id'], 
+                    ':name' => $args['name'], 
+                    ':address' => $args['address'], 
+                    ':telephones' => $args['telephones'], 
+                    ':working_time' => $args['working_time'], 
+                    ':short_info' => $args['short_info'], 
+                    ':info' => $args['info'], 
+                    ':wifi' => $args['wifi'], 
+                    ':type' => $args['type'], 
+                    ':average_check' => $args['average_check'],
+                    ':rating' => 0, 
+                    ':number_voters' => $args['number_voters'], 
+                    ':sum_votes' => $args['sum_votes'], 
+                    ':preview_img' => $args['preview_img'], 
+                    ':album_name' => $args['album_name']
+                ); 
+                
+                if($query->execute($queryArgsList))
+                {
+                    $queryResponseData = array('err_code' => '200','data' => $query->lastInsertId());
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '401');
+                }        
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
+        $this->get('delete', 0, function($args)
+        {
+            $parametersArray = array(
+                'id'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                  
+                $query = DbWorker::GetInstance()->prepare('DELETE FROM caffes WHERE id = :id');
+                $queryArgsList = array(
+                    ':id' => $args['id']
+                ); 
+                
+                if($query->execute($queryArgsList))
+                {
+                    $queryResponseData = array('err_code' => '200');
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '401');
+                }        
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
     }
     
     public function SetPutFunctions()
