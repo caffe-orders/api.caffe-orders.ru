@@ -259,6 +259,49 @@ class Users extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        $this->get('edit', 0, function($args)
+        {
+            $parametersArray = array(
+                'id',
+                'firstname', 
+                'lastname', 
+                'email', 
+                'code',
+                'access_level'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $str = 'UPDATE users SET firstname = :firstname, lastname = :lastname, email = :email, reg_code = :code, access_level = :access_level  WHERE id =:id';
+                    
+                $query = DbWorker::GetInstance()->prepare($str);
+                $queryArgsList = array(
+                    ':id' => $args['id'], 
+                    ':firstname' => $args['firstname'], 
+                    ':lastname' => $args['lastname'], 
+                    ':email' => $args['email'], 
+                    ':code' => $args['code'], 
+                    ':access_level' => $args['access_level']
+                ); 
+                
+                if($query->execute($queryArgsList))
+                {
+                    $queryResponseData = array('err_code' => '200');
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '401');
+                }        
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
         //that function receives a registration code POST responce type
         $this->get('code', 1, function($args)
         {
