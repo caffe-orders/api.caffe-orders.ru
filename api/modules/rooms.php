@@ -132,14 +132,16 @@ class Rooms extends Module implements Module_Interface
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id FROM caffes WHERE id = :caffe_id');
+                $sth = DbWorker::GetInstance();
+                $query = $sth->prepare('SELECT id FROM caffes WHERE id = :caffe_id');
                 $query->execute(array(':caffe_id' => $args['caffe_id']));
                 $result = $query->fetch();
                 if($result)
                 {
                     $query = 'INSERT rooms (caffe_id, name, background_img, xLength, yLength) 
-                                VALUES (:caffe_id, :name, :background_img, :xLength, :yLength)';                    
-                    $query = DbWorker::GetInstance()->prepare($query);
+                                VALUES (:caffe_id, :name, :background_img, :xLength, :yLength)'; 
+                    
+                    $query = $sth->prepare($query);
                     
                     $queryArgsList = array(
                         ':caffe_id' => $args['caffe_id'],
@@ -150,7 +152,7 @@ class Rooms extends Module implements Module_Interface
                     );
                     if($query->execute($queryArgsList))
                     {
-                        $queryResponseData = array('err_code' => '200');
+                        $queryResponseData = array('err_code' => '200', 'data' => $sth->LastInsertedId());
                     }
                     else
                     {

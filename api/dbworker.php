@@ -34,9 +34,9 @@ class DbWorker
         }
         return self::$instance;
     }
-    public function LastInsertedId() 
+    public static function LastInsertedId() 
     {
-        return ($self::instance->lastInsertId()) ? $self::instance->lastInsertId() : null;
+       return $self::$instance->lastInsertId();
     }
 }
 ?>
