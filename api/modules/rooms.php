@@ -72,15 +72,17 @@ class Rooms extends Module implements Module_Interface
         //returns info about selected caffe
         $this->get('info', 1, function($args)
         {
-            $parametersArray = array(
-                'id'
-            ); 
-            //(id, name, addres, phones, working_time, short_info, info, img, album)
-            if(Module::CheckFunctionArgs($parametersArray, $args))
+            if($args['id']!=0)
             {
                 $query = DbWorker::GetInstance()->prepare('SELECT * FROM rooms WHERE id = :id');
                 $query->execute(array(':id' => $args['id']));
                 $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
+            }
+            elseif($args['caffe_id']!=0)
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM rooms WHERE caffe_id = :caffe_id');
+                $query->execute(array(':caffe_id' => $args['caffe_id']));
+                $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll());
             }
             else
             {                
