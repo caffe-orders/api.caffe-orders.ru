@@ -101,12 +101,9 @@ class Rooms extends Module implements Module_Interface
             {
                 $offset = (int)$args['offset'];
                 $limit = (int)$args['limit'];
-                $caffe_id = (int)$args['caffe_id'];
-                //(id, name, address, phones, working_time, short_info, info, img, album)
                 $query = DbWorker::GetInstance()->prepare('SELECT * FROM rooms ORDER BY id DESC LIMIT :offset , :limit');
                 $query->bindParam(':offset',$offset , PDO::PARAM_INT); 
                 $query->bindParam(':limit', $limit, PDO::PARAM_INT); 
-                $query->bindParam(':caffe_id', $caffe_id, PDO::PARAM_INT); 
                 $query->execute();
                 $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll());
             }
