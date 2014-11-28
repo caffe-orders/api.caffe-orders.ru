@@ -171,6 +171,49 @@ class Rooms extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        $this->get('edit', 0, function($args)
+        {
+            $parametersArray = array(
+                'id',
+                'caffe_id',
+                'name',
+                'background_img',
+                'xLength',
+                'yLength'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $str = 'UPDATE rooms SET caffe_id = :caffe_id, name = :name, background_img = :background_img, xLength = :xLength, yLength = :yLength WHERE id = :id';
+                    
+                $query = DbWorker::GetInstance()->prepare($str);
+                $queryArgsList = array(
+                    ':id' => $args['id'], 
+                    ':name' => $args['name'], 
+                    ':caffe_id' => $args['caffe_id'], 
+                    ':background_img' => $args['background_img'], 
+                    ':xLength' => $args['xLength'], 
+                    ':yLength' => $args['yLength']
+                ); 
+                
+                if($query->execute($queryArgsList))
+                {
+                    $queryResponseData = array('err_code' => '200');
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '401');
+                }        
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
         $this->get('delete', 1, function($args)
         {
             $requiredParams = array(
