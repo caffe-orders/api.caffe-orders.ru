@@ -182,6 +182,50 @@ class Tables extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        $this->get('edit', 0, function($args)
+        {
+            $parametersArray = array(
+                'id',
+                'number',
+                'room_id',
+                'xPos',
+                'yPos',
+                'tableType',
+                'status'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $str = 'UPDATE tables SET number = :number, room_id = :room_id, xPos = :xPos, yPos = :yPos, tableType = :tableType WHERE id = :id';
+                    
+                $query = DbWorker::GetInstance()->prepare($str);
+                $queryArgsList = array(
+                    ':id' => $args['id'], 
+                    ':number' => $args['number'], 
+                    ':room_id' => $args['room_id'], 
+                    ':xPos' => $args['xPos'], 
+                    ':yPos' => $args['yPos'], 
+                    ':tableType' => $args['tableType']
+                ); 
+                
+                if($query->execute($queryArgsList))
+                {
+                    $queryResponseData = array('err_code' => '200');
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '401');
+                }        
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
         $this->get('delete', 1, function($args)
         {
             $requiredParams = array(
