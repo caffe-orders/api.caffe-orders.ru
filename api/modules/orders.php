@@ -123,7 +123,8 @@ class Orders extends Module implements Module_Interface
         $this->get('newshort', 0, function($args)
         {
             $parametersArray = array(
-                'table_id'
+                'table_id',
+                'user_id'
             ); 
             
             if(Module::CheckFunctionArgs($parametersArray, $args))
@@ -134,10 +135,9 @@ class Orders extends Module implements Module_Interface
                 if($result)
                 {
                     if((int)$result['status'] == 0)
-                    {
-                        $userId = (int)$_SESSION['id'];
+                    {                        
                         $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE user_id = :user_id');
-                        $query->execute(array(':user_id' => $userId));
+                        $query->execute(array(':user_id' => $args['user_id']));
                         $result = $query->fetch();
                         if(!$result)
                         {
@@ -152,7 +152,7 @@ class Orders extends Module implements Module_Interface
                             
                             $queryArgsList = array(
                             ':table_id' => (int)$args['table_id'], 
-                            ':user_id' => $userId,
+                            ':user_id' => $args['user_id'],
                             ':time' => date('Y-m-d H:i:s'),
                             ':type' => 1,
                             ':status' => 1, 
