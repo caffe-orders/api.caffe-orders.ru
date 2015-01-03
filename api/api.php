@@ -58,8 +58,8 @@ class Api
             $errorCode = $data['err_code'];        
         }         
         
-        $this->setResponseHeaders('application/json', $errorCode); 
-        echo(json_encode($data));       
+        $this->setResponseHeaders('application/x-javascript; charset=utf8', $errorCode); 
+        echo json_encode($data);       
     }
     // sets responce content type and error state
     private function setResponseHeaders($responceType, $errorCode)

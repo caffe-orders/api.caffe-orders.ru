@@ -247,6 +247,78 @@ class Caffes extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        $this->get('rate', 0, function($args)
+        {
+            $parametersArray = array(
+                'id',
+                'value',
+                'userId'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {                
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM rated WHERE user_id = :user_id AND record_id = :record_id AND record_type = :record_type ');
+                $arrayList = array(
+                    ':user_id' => $args['userId'],  
+                    ':record_id' => $args['id'] ,
+                    ':record_type' => 1
+                        ); 
+                $query->execute($arrayList);
+                $result = $query->fetch();
+                
+                if($result == false)
+                {
+                    $query = DbWorker::GetInstance()->prepare('SELECT id, rating, number_voters, sum_votes FROM caffes WHERE id = :id');
+                    if($query->execute(array(':id' => $args['id'])))
+                    {
+                        $data = $query->fetch();
+                        $numberVoters = $data['number_voters'] + 1;
+                        if($args['value'] > 5 || $args['value'] < 0)
+                        {
+                            $args['value'] = 5;
+                        }
+                        $summVotes = $data['number_voters'] + $args['value'];
+                        $newRating = round(abs($summVotes / $numberVoters), 1);
+                    
+                        $str = 'UPDATE caffes SET  rating = :rating, number_voters = :number_voters, sum_votes = :sum_votes WHERE id =:id';
+                    
+                        $query = DbWorker::GetInstance()->prepare($str);
+                        $queryArgsList = array(
+                            ':id' => $args['id'],
+                            ':rating' => $newRating, 
+                            ':number_voters' => $numberVoters, 
+                            ':sum_votes' => $summVotes
+                        ); 
+                
+                        if($query->execute($queryArgsList))
+                        {
+                           $queryResponseData = array('err_code' => '200','data' => 'true');
+                        }
+                        else
+                        {
+                            $queryResponseData = array('err_code' => '401');
+                        }
+                    }   
+                    else
+                    {
+                        $queryResponseData = array('err_code' => '400');
+                    }
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '400');
+                }
+                
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
         $this->get('delete', 0, function($args)
         {
             $parametersArray = array(
