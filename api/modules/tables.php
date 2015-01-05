@@ -80,7 +80,30 @@ class Tables extends Module implements Module_Interface
             {
                 $query = DbWorker::GetInstance()->prepare('SELECT * FROM tables WHERE room_id = :room_id');
                 $query->execute(array(':room_id' => $args['room_id']));
-                $queryResponseData = array('err_code' => '200', 'data' => $query->fetchAll());
+                $tables = $query->fetchAll();
+                foreach($tables as $item)
+                {
+                    if($item['status'] == 1)
+                    {
+                        $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE table_id = :table_id');
+                        $query->execute(array(':table_id' => $item['id']));
+                        $result = $query->fetch();
+                        if($result)
+                        {
+                            $timeNow = date('Y-m-d H:i:s', mktime(date("H"), date("i")-2, date("s"), date("m"), date("d"), date("Y")));
+                            $time = $result['time'];
+                            if($timeNow > $time)
+                            {
+                                $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = 0 WHERE id = :id');     
+                                $query->execute(array(':id' => (int)$item['id']));
+                                
+                                $query = DbWorker::GetInstance()->prepare('DELETE * FROM orders WHERE table_id = :table_id');     
+                                $query->execute(array(':table_id' => (int)$item['id']));
+                            }
+                        }
+                    }
+                }                
+                $queryResponseData = array('err_code' => '200', 'data' => $tables);
             }
             else
             {                

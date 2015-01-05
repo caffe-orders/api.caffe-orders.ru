@@ -119,6 +119,48 @@ class Orders extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        $this->get('checktable', 1, function($args)
+        {
+            $parametersArray = array(
+                'table_id'
+            ); 
+            //(id, name, addres, phones, working_time, short_info, info, img, album)
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE table_id = :table_id');
+                $query->execute(array(':table_id' => $args['table_id']));
+                $result = $query->fetch();
+                if($result)
+                {
+                    $timeNow = date('Y-m-d H:i:s', mktime(date("H"), date("i")-2, date("s"), date("m"), date("d"), date("Y")));
+                    $time = $result['time'];
+                            if($timeNow > $time)
+                            {
+                                $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = 0 WHERE id = :id');     
+                                $query->execute(array(':id' => (int)$args['table_id']));
+                                
+                                $query = DbWorker::GetInstance()->prepare('DELETE * FROM orders WHERE table_id = :table_id');     
+                                $query->execute(array(':table_id' => (int)$args['table_id']));
+                                $queryResponseData = array('err_code' => '400', 'data' => 'T_FREE');
+                            }
+                            else
+                            {
+                                $queryResponseData = array('err_code' => '400', 'data' => 'T_BUSY');
+                            }
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '200', 'data' => 'T_FREE');
+                }
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
         //create new room PUT responce type
         $this->get('newshort', 0, function($args)
         {
@@ -134,12 +176,38 @@ class Orders extends Module implements Module_Interface
                 $result = $query->fetch();
                 if($result)
                 {
-                    if((int)$result['status'] == 0)
-                    {                        
+                    if((int)$result['status'] != 0)                    
+                    {
+                        $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE table_id = :table_id');
+                        $query->execute(array(':table_id' => (int)$args['table_id']));
+                        $result = $query->fetch();
+                        if($result==true && $result['status']==1)
+                        {
+                            $timeNow = date('Y-m-d H:i:s', mktime(date("H"), date("i")-2, date("s"), date("m"), date("d"), date("Y")));
+                            $time = $result['time'];
+                            if($timeNow > $time)
+                            {
+                                $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = 0 WHERE id = :id');     
+                                $query->execute(array(':id' => (int)$args['table_id']));
+                                
+                                $query = DbWorker::GetInstance()->prepare('DELETE * FROM orders WHERE table_id = :table_id');     
+                                $query->execute(array(':table_id' => (int)$args['table_id']));
+                            }
+                            else
+                            {
+                                $queryResponseData = array('err_code' => '400', 'data' => 'T_BUSY');
+                            }
+                        }
+                        else
+                        {                            
+                            $queryResponseData = array('err_code' => '400', 'data' => 'T_BUSY');
+                        } 
+                    }    
+                    
                         $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE user_id = :user_id');
                         $query->execute(array(':user_id' => $args['user_id']));
                         $result = $query->fetch();
-                        if(!$result)
+                        if($result == false)
                         {
                             $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = 1 WHERE id = :id');     
                             $query->execute(array(':id' => (int)$args['table_id']));
@@ -162,26 +230,21 @@ class Orders extends Module implements Module_Interface
                             );
                             if($query->execute($queryArgsList))
                             {
-                                $queryResponseData = array('err_code' => '200');
+                                $queryResponseData = array('err_code' => '200', 'data' =>'TRUE');
                             }
                             else
                             {
-                                $queryResponseData = array('err_code' => '401','data' => 'Undefined error');
+                                $queryResponseData = array('err_code' => '401','data' => 'FALSE');
                             }
                         }
                         else
                         {
-                            $queryResponseData = array('err_code' => '401','data' => 'The user has already registered table');
+                            $queryResponseData = array('err_code' => '401','data' => 'YOU_HAVE_REG_TABLE');
                         }
-                    }
-                    else
-                    {
-                        $queryResponseData = array('err_code' => '400', 'data' => 'Table busy');
-                    }    
                 }
                 else
                 {
-                    $queryResponseData = array('err_code' => '400', 'data' => 'Table in not found');
+                    $queryResponseData = array('err_code' => '400', 'data' => 'T_NOTFOUND');
                 }
             }
             else
