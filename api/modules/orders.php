@@ -161,6 +161,34 @@ class Orders extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        $this->get('checkuser', 1, function($args)
+        {
+            $parametersArray = array(
+                'user_id'
+            ); 
+            //(id, name, addres, phones, working_time, short_info, info, img, album)
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE user_id = :user_id');
+                $query->execute(array(':user_id' => $args['user_id']));
+                $result = $query->fetch();
+                if($result)
+                {
+                    $queryResponseData = array('err_code' => '200', 'data' => 'TRUE');
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '200', 'data' => 'FALSE');
+                }
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
         //create new room PUT responce type
         $this->get('newshort', 0, function($args)
         {
@@ -190,7 +218,7 @@ class Orders extends Module implements Module_Interface
                                 $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = 0 WHERE id = :id');     
                                 $query->execute(array(':id' => (int)$args['table_id']));
                                 
-                                $query = DbWorker::GetInstance()->prepare('DELETE * FROM orders WHERE table_id = :table_id');     
+                                $query = DbWorker::GetInstance()->prepare('DELETE FROM orders WHERE table_id = :table_id');     
                                 $query->execute(array(':table_id' => (int)$args['table_id']));
                             }
                             else
@@ -331,13 +359,14 @@ class Orders extends Module implements Module_Interface
         $this->get('activate', 1, function($args)
         {
             $requiredParams = array(
-                'code'
+                'code',
+                'userId'
             );
            
             $queryResponseData =  array();
             if(Module::CheckFunctionArgs($requiredParams, $args))
             {
-                $userId = (int)$_SESSION['id'];
+                $userId = (int)$args['userId'];
                 $query = DbWorker::GetInstance()->prepare('SELECT * FROM orders WHERE user_id = :user_id');     
                 $query->execute(array(':user_id' => $userId));
                 $result = $query->fetch();

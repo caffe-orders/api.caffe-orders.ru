@@ -69,7 +69,7 @@ class Tables extends Module implements Module_Interface
     
     public function SetGetFunctions()
     {
-        //returns info about selected caffe
+        //returns info about selected caffe and check order status
         $this->get('info', 1, function($args)
         {
             $parametersArray = array(
@@ -97,7 +97,7 @@ class Tables extends Module implements Module_Interface
                                 $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = 0 WHERE id = :id');     
                                 $query->execute(array(':id' => (int)$item['id']));
                                 
-                                $query = DbWorker::GetInstance()->prepare('DELETE * FROM orders WHERE table_id = :table_id');     
+                                $query = DbWorker::GetInstance()->prepare('DELETE FROM orders WHERE table_id = :table_id');     
                                 $query->execute(array(':table_id' => (int)$item['id']));
                             }
                         }
