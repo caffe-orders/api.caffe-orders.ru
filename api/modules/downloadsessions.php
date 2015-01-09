@@ -212,6 +212,34 @@ class downloadsessions extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        $this->get('delete', 0, function($args)
+        {
+            $parametersArray = array(
+                'user_id',
+                'code',
+                'files_count'
+            ); 
+            
+            if(Module::CheckFunctionArgs($parametersArray, $args) == true)
+            {                
+                    $query = DbWorker::GetInstance()->prepare('DELETE FROM download_sessions WHERE user_id = :user_id AND code = :code');                
+                        if($query->execute(array(':user_id' => $args['user_id'], ':code' => $args['code'])))
+                        {
+                            $queryResponseData = array('err_code' => '200', 'data' => 'TRUE'); 
+                        }
+                        else
+                        {
+                            $queryResponseData = array('err_code' => '603', 'data' => 'FALSE');
+                        }
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
     }
     
     public function SetPostFunctions()
