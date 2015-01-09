@@ -174,7 +174,7 @@ class Orders extends Module implements Module_Interface
                 $result = $query->fetch();
                 if($result)
                 {
-                    $queryResponseData = array('err_code' => '200', 'data' => 'TRUE');
+                    $queryResponseData = array('err_code' => '200', 'data' => $result);
                 }
                 else
                 {
@@ -254,7 +254,7 @@ class Orders extends Module implements Module_Interface
                             ':status' => 1, 
                             ':enter_time' => date('Y-m-d H:i:s'),
                             ':activated_code' => $code,
-                            ':activate_attempts' => 0
+                            ':activate_attempts' => 2
                             );
                             if($query->execute($queryArgsList))
                             {
@@ -322,7 +322,7 @@ class Orders extends Module implements Module_Interface
                             ':status' => 1, 
                             ':enter_time' => date('Y-m-d H:i:s'),
                             ':activated_code' => $code,
-                            ':activate_attempts' => 0
+                            ':activate_attempts' => 2
                             );
                             if($query->execute($queryArgsList))
                             {
@@ -372,7 +372,7 @@ class Orders extends Module implements Module_Interface
                 $result = $query->fetch();
                 if($result)
                 {
-                    $timeNow = date('Y-m-d H:i:s', mktime(date("H"), date("i")-3, date("s"), date("m"), date("d"), date("Y")));
+                    $timeNow = date('Y-m-d H:i:s', mktime(date("H"), date("i")-2, date("s"), date("m"), date("d"), date("Y")));
                     $timeReg = $result['time'];
                     if($timeNow > $timeReg)
                     {
@@ -382,7 +382,7 @@ class Orders extends Module implements Module_Interface
                         $query = DbWorker::GetInstance()->prepare('DELETE FROM orders WHERE user_id = :user_id');                
                         $query->execute(array(':user_id' => $userId));
                                 
-                        $queryResponseData = array('err_code' => '603', 'data' => 'order deleted');
+                        $queryResponseData = array('err_code' => '400', 'data' => 'TIME_LOST');
                     }
                     else
                     {
@@ -396,11 +396,11 @@ class Orders extends Module implements Module_Interface
                                 $query = DbWorker::GetInstance()->prepare('UPDATE orders SET status = 2 WHERE user_id = :user_id');     
                                 $query->execute(array(':user_id' => $userId));
                         
-                                $queryResponseData = array('err_code' => '200'); 
+                                $queryResponseData = array('err_code' => '200', 'data' => 'TRUE'); 
                             }
                             else
                             {
-                                if($result['activate_attempts'] == 2)
+                                if($result['activate_attempts'] == 0)
                                 {
                                     $query = DbWorker::GetInstance()->prepare('UPDATE tables SET status = 0 WHERE id = :id');     
                                     $query->execute(array(':id' => $result['table_id']));
@@ -408,21 +408,23 @@ class Orders extends Module implements Module_Interface
                                     $query = DbWorker::GetInstance()->prepare('DELETE FROM orders WHERE user_id = :user_id');                
                                     $query->execute(array(':user_id' => $userId));
                                 
-                                    $queryResponseData = array('err_code' => '603', 'data' => 'order deleted');
+                                    $queryResponseData = array('err_code' => '603', 'data' => 'ATTEMPTS_LOST');
                                 }
                                 else
                                 {
-                                    $attempts = (int)$result['activate_attempts'] + 1;
+                                    $attempts = (int)$result['activate_attempts'] - 1;
                                     $query = DbWorker::GetInstance()->prepare('UPDATE orders SET activate_attempts = :attempts WHERE user_id = :user_id');     
                                     $query->execute(array(':attempts' => $attempts,':user_id' => $userId));
-                            
-                                    $queryResponseData = array('err_code' => '603', 'data' => 'Wrong code');
+                                    
+                                    $attempt = $result['activate_attempts'];
+                                    
+                                    $queryResponseData = array('err_code' => '603', 'data' => $attempt);
                                 }                            
                             }
                         }
                         else
                         {
-                            $queryResponseData = array('err_code' => '200');
+                            $queryResponseData = array('err_code' => '400');
                         }
                     }
                 }
