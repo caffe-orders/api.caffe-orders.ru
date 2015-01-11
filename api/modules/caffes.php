@@ -203,16 +203,16 @@ class Caffes extends Module implements Module_Interface
                 'average_check',
                 'number_voters', 
                 'sum_votes', 
-                'preview_img', 
                 'album_name'
             ); 
             
             $queryResponseData = array();
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $str = 'UPDATE caffes SET name = :name, address = :address, telephones = :telephones, working_time = :working_time, short_info = :short_info, info = :info, wifi = :wifi, type =:type, average_check = :average_check, rating = :rating, number_voters = :number_voters, sum_votes = :sum_votes, preview_img = :preview_img, album_name = :album_name WHERE id =:id';
-                    $sth = DbWorker::GetInstance();
+                $str = 'UPDATE caffes SET name = :name, address = :address, telephones = :telephones, working_time = :working_time, short_info = :short_info, info = :info, wifi = :wifi, type =:type, average_check = :average_check, rating = :rating, number_voters = :number_voters, sum_votes = :sum_votes, album_name = :album_name WHERE id =:id';
+                $sth = DbWorker::GetInstance();
                 $query = $sth->prepare($str);
+                $rating = $args['sum_votes'] / $args['number_voters'];
                 $queryArgsList = array(
                     ':id' => $args['id'], 
                     ':name' => $args['name'], 
@@ -224,10 +224,9 @@ class Caffes extends Module implements Module_Interface
                     ':wifi' => $args['wifi'], 
                     ':type' => $args['type'], 
                     ':average_check' => $args['average_check'],
-                    ':rating' => 0, 
+                    ':rating' => $rating, 
                     ':number_voters' => $args['number_voters'], 
-                    ':sum_votes' => $args['sum_votes'], 
-                    ':preview_img' => $args['preview_img'], 
+                    ':sum_votes' => $args['sum_votes'],  
                     ':album_name' => $args['album_name']
                 ); 
                 
