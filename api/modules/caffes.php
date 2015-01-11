@@ -281,6 +281,7 @@ class Caffes extends Module implements Module_Interface
             
             return $queryResponseData;
         });
+        
         $this->get('addimgalbum', 0, function($args)
         {
             $parametersArray = array(

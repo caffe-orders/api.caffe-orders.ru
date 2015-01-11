@@ -213,6 +213,41 @@ class Rooms extends Module implements Module_Interface
             return $queryResponseData;
         });
         
+        $this->get('editimg', 0, function($args)
+        {
+            $parametersArray = array(
+                'id',
+                'room_img'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $str = 'UPDATE rooms SET  background_img = :room_img WHERE id =:id';
+                    
+                $query = DbWorker::GetInstance()->prepare($str);
+                $queryArgsList = array(
+                    ':id' => $args['id'], 
+                    ':room_img' => $args['room_img']
+                ); 
+                
+                if($query->execute($queryArgsList))
+                {
+                    $queryResponseData = array('err_code' => '200','data' => $query->lastInsertId());
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '401');
+                }        
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
         $this->get('delete', 1, function($args)
         {
             $requiredParams = array(
