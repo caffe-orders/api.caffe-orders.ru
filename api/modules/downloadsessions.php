@@ -141,7 +141,7 @@ class downloadsessions extends Module implements Module_Interface
                 $result = $query->fetch();
                 if($result)
                 {
-                    if($result['files_count'] > 0)
+                    if($result['files_count'] > 1)
                     {
                         $count = $result['files_count'] - 1;
                         $query = DbWorker::GetInstance()->prepare('UPDATE download_sessions SET files_count = :count WHERE user_id = :user_id AND code = :code');     

@@ -80,7 +80,7 @@ class Caffes extends Module implements Module_Interface
             $queryResponseData = array();
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $query = DbWorker::GetInstance()->prepare('SELECT id, name, address, telephones, working_time, short_info, info, wifi, type, average_check, rating, number_voters, sum_votes, preview_img, album_name FROM caffes WHERE id = :id');
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM caffes WHERE id = :id');
                 if($query->execute(array(':id' => $args['id'])))
                 {
                       $queryResponseData = array('err_code' => '200', 'data' => $query->fetch());
@@ -238,6 +238,89 @@ class Caffes extends Module implements Module_Interface
                 {
                     $queryResponseData = array('err_code' => '401');
                 }        
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        
+        $this->get('editpreview', 0, function($args)
+        {
+            $parametersArray = array(
+                'id',
+                'preview_img'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $str = 'UPDATE caffes SET  preview_img = :preview_img WHERE id =:id';
+                    
+                $query = DbWorker::GetInstance()->prepare($str);
+                $queryArgsList = array(
+                    ':id' => $args['id'], 
+                    ':preview_img' => $args['preview_img']
+                ); 
+                
+                if($query->execute($queryArgsList))
+                {
+                    $queryResponseData = array('err_code' => '200','data' => $query->lastInsertId());
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '401');
+                }        
+            }
+            else
+            {                
+                $queryResponseData = array('err_code' => '602');
+            }
+            
+            return $queryResponseData;
+        });
+        $this->get('addimgalbum', 0, function($args)
+        {
+            $parametersArray = array(
+                'id',
+                'album_img'
+            ); 
+            
+            $queryResponseData = array();
+            if(Module::CheckFunctionArgs($parametersArray, $args))
+            {
+                $query = DbWorker::GetInstance()->prepare('SELECT * FROM caffes WHERE id = :id');
+                $arrayList = array(
+                    ':id' => $args['id']
+                        ); 
+                $query->execute($arrayList);
+                $result = $query->fetch();
+                if($result)
+                {
+                    $imgs = $result['album_imgs'].$args['album_img'].'/';
+                    $str = 'UPDATE caffes SET  album_imgs = :album_imgs WHERE id =:id';
+                    
+                    $query = DbWorker::GetInstance()->prepare($str);
+                    $queryArgsList = array(
+                        ':id' => $args['id'], 
+                        ':album_imgs' => $imgs
+                    ); 
+                
+                    if($query->execute($queryArgsList))
+                    {
+                        $queryResponseData = array('err_code' => '200','data' => $query->lastInsertId());
+                    }
+                    else
+                    {
+                        $queryResponseData = array('err_code' => '401');
+                    }       
+                }
+                else
+                {
+                    $queryResponseData = array('err_code' => '400');
+                }
             }
             else
             {                
