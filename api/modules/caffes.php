@@ -149,10 +149,10 @@ class Caffes extends Module implements Module_Interface
             $queryResponseData = array();
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $str = 'INSERT caffes (name, address, telephones, working_time, short_info, info, wifi, type, average_check, rating, number_voters, sum_votes, preview_img, album_name)'
-                        . ' VALUES (:name, :address, :telephones, :working_time, :short_info, :info, :wifi, :type, :average_check, :rating, :number_voters, :sum_votes, :preview_img, :album_name)';
-                    
-                $query = DbWorker::GetInstance()->prepare($str);
+                $str = 'INSERT caffes (name, address, telephones, working_time, short_info, info, wifi, type, average_check, rating, number_voters, sum_votes, preview_img, album_name, album_imgs)'
+                        . ' VALUES (:name, :address, :telephones, :working_time, :short_info, :info, :wifi, :type, :average_check, :rating, :number_voters, :sum_votes, :preview_img, :album_name, :album_imgs)';
+                $sth =DbWorker::GetInstance();
+                $query = $sth->prepare($str);
                 $queryArgsList = array(
                     ':name' => $args['name'], 
                     ':address' => $args['address'], 
@@ -167,12 +167,13 @@ class Caffes extends Module implements Module_Interface
                     ':number_voters' => $args['number_voters'], 
                     ':sum_votes' => $args['sum_votes'], 
                     ':preview_img' => $args['preview_img'], 
-                    ':album_name' => $args['album_name']
+                    ':album_name' => $args['album_name'],
+                    ':album_imgs' =>''
                 ); 
                 
                 if($query->execute($queryArgsList))
                 {
-                    $queryResponseData = array('err_code' => '200','data' => $query->lastInsertId());
+                    $queryResponseData = array('err_code' => '200','data' => $sth->lastInsertId());
                 }
                 else
                 {
@@ -210,8 +211,8 @@ class Caffes extends Module implements Module_Interface
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
                 $str = 'UPDATE caffes SET name = :name, address = :address, telephones = :telephones, working_time = :working_time, short_info = :short_info, info = :info, wifi = :wifi, type =:type, average_check = :average_check, rating = :rating, number_voters = :number_voters, sum_votes = :sum_votes, preview_img = :preview_img, album_name = :album_name WHERE id =:id';
-                    
-                $query = DbWorker::GetInstance()->prepare($str);
+                    $sth = DbWorker::GetInstance();
+                $query = $sth->prepare($str);
                 $queryArgsList = array(
                     ':id' => $args['id'], 
                     ':name' => $args['name'], 
@@ -232,7 +233,7 @@ class Caffes extends Module implements Module_Interface
                 
                 if($query->execute($queryArgsList))
                 {
-                    $queryResponseData = array('err_code' => '200','data' => $query->lastInsertId());
+                    $queryResponseData = array('err_code' => '200','data' => $sth->lastInsertId());
                 }
                 else
                 {
@@ -258,8 +259,8 @@ class Caffes extends Module implements Module_Interface
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
                 $str = 'UPDATE caffes SET  preview_img = :preview_img WHERE id =:id';
-                    
-                $query = DbWorker::GetInstance()->prepare($str);
+                $sth = DbWorker::GetInstance();
+                $query = $sth->prepare($str);
                 $queryArgsList = array(
                     ':id' => $args['id'], 
                     ':preview_img' => $args['preview_img']
@@ -267,7 +268,7 @@ class Caffes extends Module implements Module_Interface
                 
                 if($query->execute($queryArgsList))
                 {
-                    $queryResponseData = array('err_code' => '200','data' => $query->lastInsertId());
+                    $queryResponseData = array('err_code' => '200','data' => $sth->lastInsertId());
                 }
                 else
                 {
@@ -302,8 +303,8 @@ class Caffes extends Module implements Module_Interface
                 {
                     $imgs = $result['album_imgs'].$args['album_img'].'/';
                     $str = 'UPDATE caffes SET  album_imgs = :album_imgs WHERE id =:id';
-                    
-                    $query = DbWorker::GetInstance()->prepare($str);
+                    $sth = DbWorker::GetInstance();
+                    $query = $sth->prepare($str);
                     $queryArgsList = array(
                         ':id' => $args['id'], 
                         ':album_imgs' => $imgs
@@ -311,7 +312,7 @@ class Caffes extends Module implements Module_Interface
                 
                     if($query->execute($queryArgsList))
                     {
-                        $queryResponseData = array('err_code' => '200','data' => $query->lastInsertId());
+                        $queryResponseData = array('err_code' => '200','data' => $sth->lastInsertId());
                     }
                     else
                     {
