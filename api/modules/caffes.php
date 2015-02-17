@@ -143,14 +143,15 @@ class Caffes extends Module implements Module_Interface
                 'number_voters', 
                 'sum_votes', 
                 'preview_img', 
-                'album_name'
+                'album_name',
+                'map_src'
             ); 
             
             $queryResponseData = array();
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $str = 'INSERT caffes (name, address, telephones, working_time, short_info, info, wifi, type, average_check, rating, number_voters, sum_votes, preview_img, album_name, album_imgs)'
-                        . ' VALUES (:name, :address, :telephones, :working_time, :short_info, :info, :wifi, :type, :average_check, :rating, :number_voters, :sum_votes, :preview_img, :album_name, :album_imgs)';
+                $str = 'INSERT caffes (name, address, telephones, working_time, short_info, info, wifi, type, average_check, rating, number_voters, sum_votes, preview_img, album_name, album_imgs, map_src)'
+                        . ' VALUES (:name, :address, :telephones, :working_time, :short_info, :info, :wifi, :type, :average_check, :rating, :number_voters, :sum_votes, :preview_img, :album_name, :album_imgs, :map_src)';
                 $sth =DbWorker::GetInstance();
                 $query = $sth->prepare($str);
                 $queryArgsList = array(
@@ -168,7 +169,8 @@ class Caffes extends Module implements Module_Interface
                     ':sum_votes' => $args['sum_votes'], 
                     ':preview_img' => $args['preview_img'], 
                     ':album_name' => $args['album_name'],
-                    ':album_imgs' =>''
+                    ':album_imgs' =>'',
+                    ':map_src' => $args['map_src']
                 ); 
                 
                 if($query->execute($queryArgsList))
@@ -203,13 +205,14 @@ class Caffes extends Module implements Module_Interface
                 'average_check',
                 'number_voters', 
                 'sum_votes', 
-                'album_name'
+                'album_name',
+                'map_src'
             ); 
             
             $queryResponseData = array();
             if(Module::CheckFunctionArgs($parametersArray, $args))
             {
-                $str = 'UPDATE caffes SET name = :name, address = :address, telephones = :telephones, working_time = :working_time, short_info = :short_info, info = :info, wifi = :wifi, type =:type, average_check = :average_check, rating = :rating, number_voters = :number_voters, sum_votes = :sum_votes, album_name = :album_name WHERE id =:id';
+                $str = 'UPDATE caffes SET name = :name, address = :address, telephones = :telephones, working_time = :working_time, short_info = :short_info, info = :info, wifi = :wifi, type =:type, average_check = :average_check, rating = :rating, number_voters = :number_voters, sum_votes = :sum_votes, album_name = :album_name, map_src = :map_src WHERE id =:id';
                 $sth = DbWorker::GetInstance();
                 $query = $sth->prepare($str);
                 $rating = $args['sum_votes'] / $args['number_voters'];
@@ -227,7 +230,8 @@ class Caffes extends Module implements Module_Interface
                     ':rating' => $rating, 
                     ':number_voters' => $args['number_voters'], 
                     ':sum_votes' => $args['sum_votes'],  
-                    ':album_name' => $args['album_name']
+                    ':album_name' => $args['album_name'],
+                    ':map_src' => $args['map_src']
                 ); 
                 
                 if($query->execute($queryArgsList))
